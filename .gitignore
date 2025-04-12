@@ -1,0 +1,14 @@
+*.yml
+# compiled code
+__pycache__
+
+# lymph library
+lymph new
+# documentation output
+build
+_autosummary
+
+# meshes
+*.stl
+*.vtk
+STL_tests.ipynb
