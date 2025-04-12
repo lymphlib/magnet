@@ -71,7 +71,7 @@ if __name__ == '__main__':
                             "multilevel" modes.')
     parser.add_argument('--multfactor', default=0.1, type=float,
                         help='Multiplicative factor in "mult_factor" and \
-                            "bogo" modes.')
+                            "segregated" modes.')
     parser.add_argument('--k', default=128, type=int,
                         help='Number of agglomerated elements in "kway" mode.')
     parser.add_argument('--cthreshold', default=200, type=int,
@@ -128,7 +128,7 @@ if __name__ == '__main__':
         case 'Nref':
             aggM = agg_model.agglomerate(M, args.mode,
                                          nref=args.nref)
-        case 'mult_factor' | 'bogo':
+        case 'mult_factor' | 'segregated':
             aggM = agg_model.agglomerate(M, args.mode,
                                          mult_factor=args.multfactor)
         case 'direct_kway':

@@ -5,8 +5,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.data import Data
 from torch_geometric.utils import degree, from_scipy_sparse_matrix, add_self_loops, scatter
+from torch_geometric.nn.conv import SAGEConv
 
-from magnet.mesh import Mesh
+from ..mesh import Mesh
+from .gnn import GeometricGNN
+from ..aggmodels import DEVICE
 
 
 class GNNHeterogeneous(GeometricGNN):

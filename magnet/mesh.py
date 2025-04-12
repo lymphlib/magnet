@@ -19,8 +19,6 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as mcolors
 import networkx as nx
 
-from prettytable import PrettyTable
-
 from magnet.cell import Cell, Polygon, Polyhedron
 from magnet._types import ClassList
 
@@ -971,10 +969,6 @@ def _boxplot_qualities(quality_metrics: np.ndarray,
         patch.set_facecolor(color)
     ax.set_title('Quality metrics')
     ax.grid(True)
-    # create table of averages
-    table = PrettyTable(labels[:quality_metrics.shape[-1]])
-    table.add_row([*np.round(np.mean(quality_metrics, axis=0), 4)])
-    print(table)
 
 
 def create_grouped_boxplots(arrays,

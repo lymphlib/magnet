@@ -23,3 +23,5 @@ os.environ['OMP_NUM_THREADS'] = '1'
 from . import aggmodels
 from . import generate
 from . import io
+
+del os

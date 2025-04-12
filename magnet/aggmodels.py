@@ -44,9 +44,10 @@ from torch_geometric.data import Data
 from torch_geometric.utils import one_hot, to_scipy_sparse_matrix
 from torch_geometric.utils.mask import index_to_mask, mask_to_index
 
-from magnet.mesh import Mesh, AggMesh, AggMeshDataset
-from magnet.geometric_utils import maximum_sq_distance
-from magnet._types import ClassList
+from .mesh import Mesh, AggMesh, AggMeshDataset
+from .aggmodels import GNN
+from .geometric_utils import maximum_sq_distance
+from ._types import ClassList
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -89,8 +90,8 @@ class AgglomerationModel(ABC):
             'Nref' : bisect the mesh recursively a set number of times.
             'mult_factor' : bisect the mesh until the agglomerated elements are
             small enough.
-            'bogo' : same as 'mult_factor', but bisect heterogeneous parts of
-            the mesh independently.
+            'segregated' : same as 'mult_factor', but bisect heterogeneous parts
+            of the mesh independently.
         param : int, optional
             Number of refinements for mode 'Nref', ignored otherwise (default
             is 7).
@@ -119,8 +120,8 @@ class AgglomerationModel(ABC):
                 cl = self.bisection_Nref(mesh, nref)
             case 'mult_factor':
                 cl = self.bisection_mult_factor(mesh, mult_factor)
-            case 'bogo':
-                cl = self.bisection_bogo(mesh, mult_factor)
+            case 'segregated':
+                cl = self.bisection_segregated(mesh, mult_factor)
             case 'multilevel':
                 cl = self.multilevel_bisection(mesh, nref=nref, **kwargs)
             case 'direct_kway':
@@ -179,8 +180,8 @@ class AgglomerationModel(ABC):
                 agg_parts = self.bisection_Nref(mesh, nref, [subset])
             case 'mult_factor':
                 agg_parts = self.bisection_mult_factor(mesh, mult_factor, [subset])
-            case 'bogo':
-                agg_parts = self.bisection_bogo(mesh, mult_factor, subset)
+            case 'segregated':
+                agg_parts = self.bisection_segregated(mesh, mult_factor, subset)
             case _:
                 raise ValueError('Agglomeration mode %s does not exist.' % mode)
 
@@ -330,8 +331,8 @@ class AgglomerationModel(ABC):
 
         return output
 
-    def bisection_bogo(self, mesh: Mesh, mult_factor: float,
-                       subset: np.ndarray = None) -> ClassList:
+    def bisection_segregated(self, mesh: Mesh, mult_factor: float,
+                             subset: np.ndarray = None) -> ClassList:
         """Bisect heterogeneous mesh until elements are small enough.
 
         Heterogeneous parts of the mesh are bisected separately; the physical

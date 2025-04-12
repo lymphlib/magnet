@@ -2,18 +2,25 @@
 
 import numpy as np
 from scipy.sparse.csgraph import connected_components
-# import matplotlib.pyplot as plt
+import time
+from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
 from torch_geometric.nn import SAGEConv
-from torch_geometric.data import Data
+from torch_geometric.data import Data, Batch
 from torch_geometric.utils import (degree,
-                                   to_scipy_sparse_matrix)
+                                   to_scipy_sparse_matrix, 
+                                   mask_to_index)
+from torch_geometric.utils._subgraph import k_hop_subgraph 
+from torch_geometric.nn import graclus, avg_pool
+from torch_geometric.nn.pool import global_mean_pool
+
 
 from ..mesh import Mesh, MeshDataset
 from .gnn import ReinforceLearnGNN
-from ..aggmodels import DEVICE
+from ..aggmodels import AgglomerationModel, DEVICE
 
 
 class DRLRefiner(ReinforceLearnGNN):

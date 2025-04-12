@@ -5,6 +5,7 @@ Contains functions for generating simple 2D and 3D meshes from scratch.
 """
 
 import os
+import time
 import random
 import numpy as np
 from scipy import sparse
