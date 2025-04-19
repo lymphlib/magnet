@@ -486,7 +486,8 @@ class AggMesh(Mesh):
 
     def view(self, figsize=(7, 7), colors=None, palette=None,
              edge_color='black', line_width=None, alpha: float = 0.5,
-             view_phys: bool = False, ax: plt.Axes | None = None) -> None:
+             view_phys: bool = False, axes: plt.Axes | None = None,
+             title=None) -> None:
         """Plot the mesh.
 
         Parameters
@@ -518,12 +519,14 @@ class AggMesh(Mesh):
         magnet.io.exploded_view : visualize the mesh using `vtk` interactor.
         """
         # creating axes
-        if ax is None:
-            fig = plt.figure(figsize=figsize)
+        if axes is None:
+            fig = plt.figure(num=title, figsize=figsize)
             if self.dim == 2:
                 ax = fig.add_subplot()
             else:
                 fig.add_subplot(projection='3d')
+        else:
+            ax = axes
 
         # determine coloring
         if colors is None:
@@ -573,7 +576,8 @@ class AggMesh(Mesh):
             ax.set_zlim3d(center[2]-radius, center[2]+radius)
 
         ax.grid(False)
-        # plt.show()
+        if axes is None:
+            plt.show()
 
     def _assign_colors(self, palette=None):
         """Assign colors to agglomerated elements for plotting."""

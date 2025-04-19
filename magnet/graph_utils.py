@@ -8,7 +8,7 @@ from torch_geometric.data import Data
 from torch_geometric.utils import degree
 from scipy.spatial.transform import Rotation as Rot
 
-DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+from ._absaggmodels import DEVICE
 
 
 def neighbours(graph: Data, node: int) -> torch.Tensor:

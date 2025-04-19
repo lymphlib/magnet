@@ -13,9 +13,8 @@ from torch_geometric.utils import from_scipy_sparse_matrix, add_self_loops
 from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 
-from ..aggmodels import AgglomerationModel, DEVICE
+from .._absaggmodels import AgglomerationModel, DEVICE
 from ..graph_utils import expected_normalized_cut
-from .gnn import GNN, GeometricGNN
 from ..mesh import Mesh, MeshDataset
 from .._types import ClassList
 from ..graph_utils import randomrotate, align_to_x_axis
@@ -295,7 +294,7 @@ class GeometricGNN(GNN, AgglomerationModel):
         if save_logs:
             path = 'training/'+datetime.now().strftime('%Y%m%d%H')+'_'+self.__class__.__name__
             if not os.path.isdir(path):
-                os.mkdir(path)
+                os.makedirs(path)
 
             content = (
                 'Model:\t'+self.__class__.__name__+'\n'

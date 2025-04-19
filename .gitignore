@@ -1,16 +1,16 @@
 # compiled code
 __pycache__
 
-# lymph library
+# dependencies
+METIS
 lymph
 lymph new
+
 # documentation output
 build
 _autosummary
 
-# meshes
 *.stl
 *.vtk
 *.ipynb
 *.yml
-Data

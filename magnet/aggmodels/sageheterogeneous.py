@@ -9,7 +9,8 @@ from torch_geometric.nn.conv import SAGEConv
 
 from ..mesh import Mesh
 from .gnn import GeometricGNN
-from ..aggmodels import DEVICE
+from ..graph_utils import align_to_x_axis
+from .._absaggmodels import DEVICE
 
 
 class GNNHeterogeneous(GeometricGNN):
@@ -107,7 +108,7 @@ class GNNHeterogeneous(GeometricGNN):
         volumes_sample = x[:, -2].unsqueeze(-1)
         physical_groups_sample = x[:, -1].unsqueeze(-1)
 
-        coords_sample = self._align_to_x_axis(coords_sample)
+        coords_sample = align_to_x_axis(coords_sample)
         coords_sample = (coords_sample-torch.mean(coords_sample, dim=0)
                          )/torch.std(coords_sample, dim=0)
 

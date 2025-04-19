@@ -3,9 +3,9 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-from magnet.mesh import Mesh
-from magnet.aggmodels import AgglomerationModel
-from _types import ClassList
+from ..mesh import Mesh
+from .._absaggmodels import AgglomerationModel
+from .._types import ClassList
 
 
 class KMEANS(AgglomerationModel):

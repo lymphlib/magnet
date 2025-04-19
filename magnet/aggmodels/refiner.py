@@ -20,7 +20,8 @@ from torch_geometric.nn.pool import global_mean_pool
 
 from ..mesh import Mesh, MeshDataset
 from .gnn import ReinforceLearnGNN
-from ..aggmodels import AgglomerationModel, DEVICE
+from .._absaggmodels import AgglomerationModel, DEVICE
+from .. import graph_utils
 
 
 class DRLRefiner(ReinforceLearnGNN):
@@ -144,7 +145,7 @@ class DRLRefiner(ReinforceLearnGNN):
         one_hot_part[cl[0], 0] = 1
         one_hot_part[cl[1], 1] = 1
         biparted_coarse_graph = Data(x=one_hot_part, edge_index=coarse_graph.edge_index)
-        # uncorasen the bisected graph
+        # uncoarsen the bisected graph
         _, inverse = torch.unique(cluster, sorted=True, return_inverse=True)
         graph.x = biparted_coarse_graph.x[inverse]
         # setup for refiner
@@ -195,6 +196,12 @@ class DRLRefiner(ReinforceLearnGNN):
 
         return g_red, subset_k
 
+    def volumes(self, graph):
+        return graph_utils.volumes(graph.x[:, :2], graph.edge_index)
+
+    def cut(self, graph):
+        return graph_utils.cut(graph.x[:, :2], graph.edge_index)
+
     def compute_episode_length(self, graph: Data) -> int:
         return int(self.cut(graph))+1
 
@@ -216,7 +223,7 @@ class DRLRefiner(ReinforceLearnGNN):
         new_state.x[:, -2] = va
         new_state.x[:, -1] = vb
         return new_state
-
+    
     def objective(self, graph, starter):
         volumes = self.volumes(starter)
         return self.cut(graph)*(1/volumes[0]+1/volumes[1])
@@ -264,7 +271,7 @@ class DRLRefiner(ReinforceLearnGNN):
         graph, subset_k = self.k_hop_graph_cut(biparted_graph, k)
         graph = self._setup_intial_subgraph(biparted_graph, graph, subset_k).to(DEVICE)
         if graph.num_nodes == 0:
-            print('Skipped refinement')
+            # print('Skipped refinement')
             return biparted_graph
         # run the refiner on the subgraph
         len_episode = self.compute_episode_length(biparted_graph)
@@ -387,7 +394,7 @@ class Reyyy(DRLRefiner):
 
         x_actor = self.act(self.conv_actor(x, edge_index))
         x_actor = self.lin_actor(x_actor)
-        x_actor[do_not_flip] = torch.tensor(-np.Inf)
+        x_actor[do_not_flip] = torch.tensor(-np.inf)
         # x_actor = torch.log_softmax(x_actor, dim=0)   !!!!
         x_actor = torch.softmax(x_actor, dim=0)
 

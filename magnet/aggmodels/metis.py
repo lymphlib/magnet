@@ -4,9 +4,9 @@ import numpy as np
 import networkx as nx
 import metispy as metis
 
-from magnet.mesh import Mesh
-from magnet.aggmodels import AgglomerationModel
-from _types import ClassList
+from ..mesh import Mesh
+from .._absaggmodels import AgglomerationModel
+from .._types import ClassList
 
 
 class METIS(AgglomerationModel):
@@ -21,6 +21,10 @@ class METIS(AgglomerationModel):
             G.nodes[i]['volume'] = v[0]
             # G.nodes[i]['Volume_float'] = Volumes[i]
         G.graph['node_weight_attr'] = 'volume'
+        return G
+    
+    def _get_graph_unitary_weights(self, mesh: Mesh) -> nx.Graph:
+        G = nx.from_scipy_sparse_array(mesh.Adjacency)
         return G
 
     def _bisect_subgraph(self, graph: nx.Graph, subset: np.ndarray,
@@ -50,7 +54,7 @@ class METIS(AgglomerationModel):
 
         return groups
 
-    def direct_k_way(self, mesh: Mesh, k: int) -> ClassList:
+    def direct_k_way(self, mesh: Mesh, k: int, volume_weights: bool = True) -> ClassList:
         """Bisect the mesh recursively a set number of times.
 
         The agglomearated mesh will have (at most) 2^`Nref` agglomerated
@@ -62,6 +66,8 @@ class METIS(AgglomerationModel):
             Mesh to be bisected.
         Nref : int
             Number of times to recursively bisect the mesh.
+        volume_weights : bool, optional
+            If true, use volume as node weights, otherwise use unitary weights.
 
         Returns
         -------
@@ -69,7 +75,10 @@ class METIS(AgglomerationModel):
             A list of arrays, each containing the indices of the elements
             corresponding to one of the agglomerated elements.
         """
-        G = self._get_graph(mesh)
+        if volume_weights:
+            G = self._get_graph(mesh)
+        else:
+            G = self._get_graph_unitary_weights(mesh)
 
         # Partition with metis; contig ensures connected components.
         _, parts = metis.part_graph(G, k, contig=True)

@@ -736,10 +736,10 @@ def dataset_2D(composition: dict[str: int],
                 dataset_folder+'/'+base_name+str(index)+'.'+extension,
                 **custom_kwargs[mesh_type])
             n_cells.append(areas[index].shape[0])
-            print('Progress:\t'+str(index/dataset_size*100)+' %', end="\r", flush=True)
+            print(f'Progress:\t {(index/dataset_size*100):.2f} %', end="\r", flush=True)
             # update log file
-        content += ('\n\n-'+str(n_meshes)+' mesh -> '+mesh_type+' \t [from mesh '+str(base)+' to mesh '+str(base+n_meshes)+']\n'
-                    + 'minimum number of cells:\t'+str(min(n_cells))+'\t\tmaximum:\t'+str(max(n_cells)))
+        content += (f'\n\n- {n_meshes} mesh -> {mesh_type} \t [from mesh {base} to mesh {base+n_meshes}]\n'
+                    f'minimum number of cells:\t{min(n_cells)}\t\tmaximum:\t{max(n_cells)}')
         base += n_meshes
 
     # save .npz file

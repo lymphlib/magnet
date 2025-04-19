@@ -15,9 +15,10 @@ from torch_geometric.utils import (degree, from_scipy_sparse_matrix,
 
 from ..mesh import Mesh
 from .gnn import ReinforceLearnGNN
-from ..aggmodels import DEVICE
 from ..graph_utils import randomrotate, align_to_x_axis, normalized_cut
+from .._absaggmodels import DEVICE
 from .._types import ClassList
+from .. import graph_utils
 
 
 class DRLCoarsePartioner(ReinforceLearnGNN):
@@ -37,6 +38,12 @@ class DRLCoarsePartioner(ReinforceLearnGNN):
         # first_vertex = np.random.choice(np.argmin(degree(
         #     graph.edge_index[0]).cpu().numpy(), keepdims=True))
         # self.change_vert(graph, first_vertex)
+    
+    def volumes(self, graph):
+        return graph_utils.volumes(graph.x[:, :2], graph.edge_index)
+
+    def cut(self, graph):
+        return graph_utils.cut(graph.x[:, :2], graph.edge_index)
 
     def compute_episode_length(self, graph: Data) -> int:
         return math.ceil(graph.num_nodes/2 - 1)
@@ -190,7 +197,7 @@ class DRLCPGatti(DRLCoarsePartioner):
 
         # set probabilities of already flipped vertices to zero
         flipped = x_start[:, 1] == torch.tensor(1, device=DEVICE)
-        x_actor.data[flipped] = torch.tensor(-np.Inf)
+        x_actor.data[flipped] = torch.tensor(-np.inf)
         x_actor = torch.softmax(x_actor, dim=0)
 
         if self.training:
@@ -293,7 +300,7 @@ class WeakContigDRLCP(DRLCoarsePartioner):
         x_actor = self.act(self.actor1(x))
         x_actor = self.actor2(x_actor)
         # set probabilities of already flipped nodes to zero
-        x_actor.data[flipped] = torch.tensor(-np.Inf)
+        x_actor.data[flipped] = torch.tensor(-np.inf)
         x_actor = torch.softmax(x_actor, dim=0)
         if self.training:
             # critic branch
@@ -351,7 +358,7 @@ class ContigDRLCP(DRLCPGatti):
 
         # set probabilities of already flipped vertices to zero
         mask = torch.logical_or(x_start[:, 1] == 1, x_start[:, 2] == 1)
-        x_actor.data[mask] = torch.tensor(-np.Inf)
+        x_actor.data[mask] = torch.tensor(-np.inf)
         x_actor = torch.softmax(x_actor, dim=0)
 
         if self.training:
