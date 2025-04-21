@@ -16,8 +16,8 @@ if __name__ == "__main__":
 
     print('Agglomerating meshes...')
     meshes = [
-        metis.agglomerate(whole_brain, 'direct_kway', nref=256),
-        kmeans.agglomerate(whole_brain, 'direct_kway', nref=256),
+        metis.agglomerate(whole_brain, 'direct_kway', nref=2**8),
+        kmeans.agglomerate(whole_brain, 'direct_kway', nref=2**8),
         sage.agglomerate(whole_brain, 'Nref', nref=8),
         sage.agglomerate(whole_brain, 'multilevel', nref=8, refiner=rlrefiner)
     ]
@@ -48,5 +48,7 @@ if __name__ == "__main__":
     group_labels = ['Circle Ratio', 'Sphericity', 'Uniformity Factor', 'Volumes Difference']
     title = None
     colors = ['#5EFB6E', '#43BFC7','#FBB917','#8E35EF', '#C8A2C8']
-    create_grouped_boxplots(whole_brain_qualities, colors=colors, legend_labels=legend_labels, group_labels=group_labels, title=title,
+    create_grouped_boxplots(whole_brain_qualities, colors=colors, 
+                            legend_labels=legend_labels, group_labels=group_labels, 
+                            title=title, label_fontsize=10,
                             widths = 0.4, boxplot_spacing=0.6, groups_spacing=0.8)

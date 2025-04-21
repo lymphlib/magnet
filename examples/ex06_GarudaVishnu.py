@@ -17,9 +17,9 @@ if __name__ == "__main__":
 
     print('Agglomerating with METIS...')
     # we do not use volumes as weights because METIS fails
-    M1 = metis.agglomerate(GarudaVishnu, 'direct_kway', nref=512, volume_weights=False)
+    M1 = metis.agglomerate(GarudaVishnu, 'direct_kway', nref=2**9, volume_weights=False)
     print('Agglomerating with Kmeans...')
-    M2 = kmeans.agglomerate(GarudaVishnu, 'direct_kway', nref=512)
+    M2 = kmeans.agglomerate(GarudaVishnu, 'direct_kway', nref=2**9)
     print('Agglomerating with SAGE-base + RL refiner...')
     try:
         M3 = sage.agglomerate(GarudaVishnu, 'multilevel', nref=9, threshold=500, refiner=rlrefiner, using_cuda=True)
@@ -56,5 +56,6 @@ if __name__ == "__main__":
     title = None
     colors = ['#5EFB6E', '#43BFC7','#8E35EF', '#C8A2C8'] #,'#FBB917'
     create_grouped_boxplots(GV_qualities, colors=colors,
-                            legend_labels=legend_labels, group_labels=group_labels, title=title, label_fontsize=16,
+                            legend_labels=legend_labels, group_labels=group_labels,
+                            title=title, label_fontsize=10,
                             widths = 0.4, boxplot_spacing=0.6, groups_spacing=0.8, ylim=1.141)
