@@ -702,7 +702,8 @@ def exploded_view(mesh: AggMesh,
                   orientation: tuple[int, int, int] = (0, 0, 0),
                   figsize: tuple[int, int] = (800, 600),
                   save_image_path: str | None = None,
-                  image_scaling: int = 2):
+                  image_scaling: int = 2,
+                  title: str = None):
     """Visualize exploded mesh using `vtk` renderer.
 
     Creates a `vtk` window interactor displaying the mesh, in which each
@@ -738,6 +739,8 @@ def exploded_view(mesh: AggMesh,
     image_scaling: int, optional
         Scale image factor when exporting to png. For example, 2 means that
         the image size is doubled.
+    title : str, optional
+        Title of the displayed window
 
     Returns
     -------
@@ -845,12 +848,12 @@ def exploded_view(mesh: AggMesh,
     renderer = vtk.vtkRenderer()
     render_window = vtk.vtkRenderWindow()
     render_window.AddRenderer(renderer)
-    render_window_interactor = vtk.vtkRenderWindowInteractor()
-    render_window_interactor.SetRenderWindow(render_window)
 
     renderer.AddActor(actor)
     renderer.SetBackground(vtk.vtkNamedColors().GetColor3d(background))
     render_window.SetSize(*figsize)
+    if title is not None:
+        render_window.SetWindowName(title)
     render_window_interactor = vtk.vtkRenderWindowInteractor()
     render_window_interactor.SetRenderWindow(render_window)
 

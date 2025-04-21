@@ -13,7 +13,7 @@ if __name__ == "__main__":
     sage.load_model('magnet/models/SAGEbase3D.pt')
     rlrefiner = magnet.aggmodels.Reyyy(5,10).to(magnet.DEVICE)
     rlrefiner.load_model('magnet/models/RLrefiner.pt')
-    models = [metis, kmeans, sage, rlrefiner]
+    labels = ['METIS', 'Kmeans', 'SAGEbase_CP_RL_refiner']
 
     print('Agglomerating with METIS...')
     # we do not use volumes as weights because METIS fails
@@ -34,8 +34,9 @@ if __name__ == "__main__":
                     palette=None,
                     edge_color=None, edge_width=1,
                     orientation= (260,90,90),
-                    save_image_path= 'data/images/GarudaVishnu_'+models[i].__class__.__name__+'.png',
-                    image_scaling=2)
+                    save_image_path= f'data/images/GarudaVishnu_{labels[i]}.png',
+                    image_scaling=2,
+                    title = f'GarudaVishnu_{labels[i]}')
     
     for i, mesh in enumerate(meshes):
         magnet.io.exploded_view(mesh, scale=0.85,
@@ -43,8 +44,9 @@ if __name__ == "__main__":
                         edge_color=None, edge_width=1,
                         orientation= (260,90,90),
                         figsize=(1000,750),
-                        save_image_path='data/images/GarudaVishnu_exploded_'+models[i].__class__.__name__+'.png',
-                        image_scaling=2)
+                        save_image_path=f'data/images/GarudaVishnu_exploded_{labels[i]}',
+                        image_scaling=2,
+                        title = f'GarudaVishnu_exploded_{labels[i]}')
 
     # Quality metrics box plots
     print('Computing quality metrics...')

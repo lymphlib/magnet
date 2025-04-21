@@ -12,7 +12,7 @@ if __name__ == "__main__":
     sage.load_model('magnet/models/SAGEbase3D.pt')
     rlrefiner = magnet.aggmodels.Reyyy(5,10).to(magnet.DEVICE)
     rlrefiner.load_model('magnet/models/RLrefiner.pt')
-    models = [metis, kmeans, sage, rlrefiner]
+    labels=['METIS', 'Kmeans', 'SAGEbase', 'SAGEbase_CP_RL_refiner']
 
     print('Agglomerating meshes...')
     meshes = [
@@ -28,16 +28,18 @@ if __name__ == "__main__":
         magnet.io.exploded_view(mesh, scale=0,
                     edge_color=None, edge_width=1,
                     orientation=(0,0,0),
-                    save_image_path='data/images/whole_brain_'+models[i].__class__.__name__+'.png',
-                    image_scaling=2)
+                    save_image_path=f'data/images/WholeBrain_{labels[i]}.png',
+                    image_scaling=2,
+                    title=f'WholeBrain_{labels[i]}')
     
     # Exploded view
     for i, mesh in enumerate(meshes): 
         magnet.io.exploded_view(mesh, scale=1.5,
                     edge_color=None, edge_width=1,
                     orientation=(0,0,0),
-                    save_image_path='data/images/whole_brain_exploded_'+models[i].__class__.__name__+'.png',
-                    image_scaling=2)
+                    save_image_path=f'data/images/WholeBrain_exploded_{labels[i]}.png',
+                    image_scaling=2,
+                    title=f'WholeBrain_exploded_{labels[i]}')
     
     # QUality metrics boxplots
     print('Computing quality metrics...')
