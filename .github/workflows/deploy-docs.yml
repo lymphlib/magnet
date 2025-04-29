@@ -17,6 +17,7 @@ jobs:
       run: |
           apt-get update
           apt-get install -y build-essential
+          apt-get install -y git
           apt-get install -y metis libmetis-dev
           apt-get install -y libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libxrender1 libxcursor-dev libxft2 libxinerama1
 
