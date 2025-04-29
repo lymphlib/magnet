@@ -1,0 +1,45 @@
+name: Deploy Sphinx Docs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # allows manual runs
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: pytorch/pytorch
+
+    steps:
+    - name: Install system dependencies
+      run: |
+          apt-get update
+          apt-get install -y build-essential
+          apt-get install -y metis libmetis-dev
+          apt-get install -y libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libxrender1 libxcursor-dev libxft2 libxinerama1
+
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Package
+      run: pip install .
+
+    - name: Install Docs Requirements
+      run: pip install sphinx pydata-sphinx-theme
+
+    - name: Build Documentation
+      working-directory: docs
+      run: make html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html

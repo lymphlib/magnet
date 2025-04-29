@@ -3,9 +3,9 @@
 import numpy as np
 from sklearn.cluster import KMeans
 
-from ..mesh import Mesh
-from .._absaggmodels import AgglomerationModel
-from .._types import ClassList
+from magnet.mesh import Mesh
+from magnet._absaggmodels import AgglomerationModel
+from magnet._types import ClassList
 
 
 class KMEANS(AgglomerationModel):
@@ -15,8 +15,9 @@ class KMEANS(AgglomerationModel):
         graph = mesh.Coords
         return graph
 
-    def _bisect_subgraph(self, graph: np.ndarray, subset: np.ndarray,
-                         dim: int = None) -> ClassList:
+    def _bisect_subgraph(
+        self, graph: np.ndarray, subset: np.ndarray, dim: int = None
+    ) -> ClassList:
         """Call Kmeans on the mesh to bisect it once.
 
         Parameters

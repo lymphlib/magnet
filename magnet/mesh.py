@@ -23,7 +23,7 @@ from magnet.cell import Cell, Polygon, Polyhedron
 from magnet._types import ClassList
 
 
-class Mesh():
+class Mesh:
     """Graph data that describes a mesh.
 
     Each cell of the mesh corresponds to a node of the graph: 2 nodes are
@@ -75,12 +75,12 @@ class Mesh():
     """
 
     def __init__(
-            self,
-            adjacency: sparse.csr_matrix,
-            coords: np.ndarray,
-            volumes: np.ndarray,
-            physical_groups: np.ndarray | None = None
-            ) -> None:
+        self,
+        adjacency: sparse.csr_matrix,
+        coords: np.ndarray,
+        volumes: np.ndarray,
+        physical_groups: np.ndarray | None = None,
+    ) -> None:
 
         self.dim = coords.shape[-1]
         self.num_cells = volumes.shape[0]
@@ -94,7 +94,7 @@ class Mesh():
         else:
             self.Physical_Groups = physical_groups.reshape((-1, 1))
 
-    def subgraph(self, node_ids: Iterable[int]) -> 'Mesh':
+    def subgraph(self, node_ids: Iterable[int]) -> "Mesh":
         """Extract submesh corresponding to given element ids.
 
         Parameters
@@ -108,19 +108,22 @@ class Mesh():
         Mesh
             The new submesh.
         """
-        return Mesh(self.Adjacency[node_ids][:, node_ids],
-                    self.Coords[node_ids],
-                    self.Volumes[node_ids],
-                    self.Physical_Groups[node_ids])
+        return Mesh(
+            self.Adjacency[node_ids][:, node_ids],
+            self.Coords[node_ids],
+            self.Volumes[node_ids],
+            self.Physical_Groups[node_ids],
+        )
 
-    def visualize_as_graph(self,
-                           classes: ClassList | None = None,
-                           view_phys_groups: bool = False,
-                           palette: Iterable[str] | None = None,
-                           edge_color: str = "tab:gray",
-                           edge_width: float = 1,
-                           node_size: Iterable[float] | None = None,
-                           ) -> None:
+    def visualize_as_graph(
+        self,
+        classes: ClassList | None = None,
+        view_phys_groups: bool = False,
+        palette: Iterable[str] | None = None,
+        edge_color: str = "tab:gray",
+        edge_width: float = 1,
+        node_size: Iterable[float] | None = None,
+    ) -> None:
         """Visualize the graph representing the mesh.
 
         If a partition of the graph defined by `classes` is provided, color
@@ -161,7 +164,7 @@ class Mesh():
             # only in the case of classes the full palette is used
             colors = self._assign_color_classes(classes, palette=palette)
         elif palette is None:
-            colors = '#1f78b4'  # default color
+            colors = "#1f78b4"  # default color
         elif isinstance(colors, str | tuple[float, float, float]):
             colors = palette
         else:
@@ -170,18 +173,25 @@ class Mesh():
             colors = palette[0]
 
         if node_size is None:
-            node_size = self.Volumes/np.max(self.Volumes)*50
+            node_size = self.Volumes / np.max(self.Volumes) * 50
 
         G = nx.from_scipy_sparse_array(self.Adjacency)
         if self.dim == 2:
             dic_pos = {i: self.Coords[i] for i in range(self.num_cells)}
-            nx.draw(G, dic_pos, node_size=node_size, node_color=colors,
-                    width=edge_width, edge_color=edge_color)
+            nx.draw(
+                G,
+                dic_pos,
+                node_size=node_size,
+                node_color=colors,
+                width=edge_width,
+                edge_color=edge_color,
+            )
         else:
             # Extract node and edge positions from the layout
             node_xyz = np.array([self.Coords[v] for v in sorted(G)])
-            edge_xyz = np.array([(self.Coords[u], self.Coords[v])
-                                 for u, v in G.edges()])
+            edge_xyz = np.array(
+                [(self.Coords[u], self.Coords[v]) for u, v in G.edges()]
+            )
 
             # Create the 3D figure
             fig = plt.figure()
@@ -218,7 +228,7 @@ class Mesh():
             palette = list(mcolors.TABLEAU_COLORS.values())
         elif isinstance(palette, str):
             palette = [palette]
-        colors = ['' for i in range(self.num_cells)]
+        colors = ["" for i in range(self.num_cells)]
         for class_index in range(len(classes)):
             for j in classes[class_index]:
                 colors[j] = palette[class_index % len(palette)]
@@ -250,7 +260,7 @@ class Mesh():
         return parts
 
 
-class Boundary():
+class Boundary:
     """Mesh boundary structure.
 
     Parameters
@@ -270,6 +280,7 @@ class Boundary():
         Boundary elements tags. May be used to distinguish different parts of
         the boundary (e.g. for imposing boundary conditions).
     """
+
     def __init__(self, faces: list, tags: np.ndarray):
         self.Faces = faces
         self.Tags = tags
@@ -330,28 +341,29 @@ class AggMesh(Mesh):
     """
 
     def __init__(
-            self,
-            vertices: np.ndarray = None,
-            cells: list[Cell] = None,
-            adjacency: sparse.csr_matrix = None,
-            coords: np.ndarray = None,
-            volumes: np.ndarray = None,
-            physical_groups: np.ndarray = None,
-            boundary: Boundary = None,
-            ) -> None:
+        self,
+        vertices: np.ndarray = None,
+        cells: list[Cell] = None,
+        adjacency: sparse.csr_matrix = None,
+        coords: np.ndarray = None,
+        volumes: np.ndarray = None,
+        physical_groups: np.ndarray = None,
+        boundary: Boundary = None,
+    ) -> None:
 
         self.Vertices = vertices
         self.Cells = cells
 
         self.Boundary = boundary
 
-        super().__init__(adjacency=adjacency, coords=coords, volumes=volumes,
-                         physical_groups=physical_groups)
+        super().__init__(
+            adjacency=adjacency,
+            coords=coords,
+            volumes=volumes,
+            physical_groups=physical_groups,
+        )
 
-    def _agglomeration(self,
-                       classes: ClassList,
-                       non_agg_part=np.zeros(0)
-                       ) -> 'AggMesh':
+    def _agglomeration(self, classes: ClassList, non_agg_part=np.zeros(0)) -> "AggMesh":
         """Mesh agglomeration algorithm.
 
         Create a new mesh starting from this one by agglomerating elements as
@@ -397,9 +409,11 @@ class AggMesh(Mesh):
             # the faces are not triangles.
 
             if self.dim == 2:
-                Faces = [tuple(sorted(self.Cells[ids].Faces[i]))
-                         for ids in new_element_ids
-                         for i in range(len(self.Cells[ids].Faces))]
+                Faces = [
+                    tuple(sorted(self.Cells[ids].Faces[i]))
+                    for ids in new_element_ids
+                    for i in range(len(self.Cells[ids].Faces))
+                ]
 
                 Face_set = set()
                 for face in Faces:
@@ -426,14 +440,17 @@ class AggMesh(Mesh):
                 new_cells.append(Polyhedron(sorted(Nodes_set), faces=list(Face_set)))
             new_volumes[jj] = np.sum(self.Volumes[new_element_ids])
             # the centroid is the weighted average of the original centroids:
-            new_centroids[jj] = (self.Volumes[new_element_ids].T @
-                                 self.Coords[new_element_ids])/new_volumes[jj]
+            new_centroids[jj] = (
+                self.Volumes[new_element_ids].T @ self.Coords[new_element_ids]
+            ) / new_volumes[jj]
             # we set the physical group of a new element as the weighted average:
             # new_phys_groups[jj] = (self.Volumes[new_element_ids].T @
             #                        self.Physical_Groups[new_element_ids]
             #                        )/new_volumes[jj]
             # we set the physical group of a new element as the most common one:
-            values, counts = np.unique(self.Physical_Groups[new_element_ids], return_counts=True)
+            values, counts = np.unique(
+                self.Physical_Groups[new_element_ids], return_counts=True
+            )
             new_phys_groups[jj] = values[counts.argmax()]
 
         # since some vertices will be removed, we need to update the indexing:
@@ -443,20 +460,30 @@ class AggMesh(Mesh):
         old_to_new_index = {new_nodes[i]: i for i in range(len(new_nodes))}
         for C in new_cells:
             C.Nodes = [old_to_new_index[C.Nodes[i]] for i in range(len(C.Nodes))]
-            C.Faces = [[old_to_new_index[C.Faces[i][j]] for j in range(len(C.Faces[i]))]
-                       for i in range(len(C.Faces))]
+            C.Faces = [
+                [old_to_new_index[C.Faces[i][j]] for j in range(len(C.Faces[i]))]
+                for i in range(len(C.Faces))
+            ]
             C.MeshVertices = Verts  # was not added earlier
         if self.Boundary is not None:
             new_boundary = Boundary(
-               [[old_to_new_index[F[i]] for i in range(len(F))] for F in self.Boundary.Faces],
-               self.Boundary.Tags)
+                [
+                    [old_to_new_index[F[i]] for i in range(len(F))]
+                    for F in self.Boundary.Faces
+                ],
+                self.Boundary.Tags,
+            )
         else:
             new_boundary = None
 
-        aggM = AggMesh(Verts, new_cells, coords=new_centroids,
-                       volumes=new_volumes,
-                       physical_groups=new_phys_groups,
-                       boundary=new_boundary)
+        aggM = AggMesh(
+            Verts,
+            new_cells,
+            coords=new_centroids,
+            volumes=new_volumes,
+            physical_groups=new_phys_groups,
+            boundary=new_boundary,
+        )
         # sort polygon nodes counterclockwise in 2D case
         if aggM.dim == 2:
             aggM._sort_counterclockwise()
@@ -475,7 +502,7 @@ class AggMesh(Mesh):
         None
         """
         if self.dim != 2:
-            raise ValueError('The mesh must be 2-dimensional to sort nodes.')
+            raise ValueError("The mesh must be 2-dimensional to sort nodes.")
         for cell in self.Cells:
             cell.sort_nodes()
             if cell.is_counterclockwise() is clockwise:
@@ -484,10 +511,18 @@ class AggMesh(Mesh):
                 # TODO: make the storing of nodes consistent across the code.
                 cell.Nodes.reverse()
 
-    def view(self, figsize=(7, 7), colors=None, palette=None,
-             edge_color='black', line_width=None, alpha: float = 0.5,
-             view_phys: bool = False, axes: plt.Axes | None = None,
-             title=None) -> None:
+    def view(
+        self,
+        figsize=(7, 7),
+        colors=None,
+        palette=None,
+        edge_color="black",
+        line_width=None,
+        alpha: float = 0.5,
+        view_phys: bool = False,
+        axes: plt.Axes | None = None,
+        title=None,
+    ) -> None:
         """Plot the mesh.
 
         Parameters
@@ -524,7 +559,7 @@ class AggMesh(Mesh):
             if self.dim == 2:
                 ax = fig.add_subplot()
             else:
-                fig.add_subplot(projection='3d')
+                fig.add_subplot(projection="3d")
         else:
             ax = axes
 
@@ -543,18 +578,20 @@ class AggMesh(Mesh):
             # look wrong (no holes or only an inner hole and no external
             # boundary).
             for cell_id in range(self.num_cells):
-                P = patches.Polygon(self.Vertices[self.Cells[cell_id].Nodes],
-                                    facecolor=colors[cell_id],
-                                    edgecolor=edge_color,
-                                    linewidth=line_width)
+                P = patches.Polygon(
+                    self.Vertices[self.Cells[cell_id].Nodes],
+                    facecolor=colors[cell_id],
+                    edgecolor=edge_color,
+                    linewidth=line_width,
+                )
                 ax.add_patch(P)
             ax.set_axis_off()
             upper_bounds = np.max(self.Vertices, axis=0)
             lower_bounds = np.min(self.Vertices, axis=0)
-            center = (upper_bounds+lower_bounds)/2
-            radius = 0.5*max(upper_bounds-lower_bounds)
-            ax.set_xlim(center[0]-radius, center[0]+radius)
-            ax.set_ylim(center[1]-radius, center[1]+radius)
+            center = (upper_bounds + lower_bounds) / 2
+            radius = 0.5 * max(upper_bounds - lower_bounds)
+            ax.set_xlim(center[0] - radius, center[0] + radius)
+            ax.set_ylim(center[1] - radius, center[1] + radius)
 
         else:
             for cell_id in range(len(self.Cells)):
@@ -569,11 +606,11 @@ class AggMesh(Mesh):
             # on the three axis
             upper_bounds = np.max(self.Vertices, axis=0)
             lower_bounds = np.min(self.Vertices, axis=0)
-            center = (upper_bounds+lower_bounds)/2
-            radius = 0.5*max(upper_bounds-lower_bounds)
-            ax.set_xlim3d(center[0]-radius, center[0]+radius)
-            ax.set_ylim3d(center[1]-radius, center[1]+radius)
-            ax.set_zlim3d(center[2]-radius, center[2]+radius)
+            center = (upper_bounds + lower_bounds) / 2
+            radius = 0.5 * max(upper_bounds - lower_bounds)
+            ax.set_xlim3d(center[0] - radius, center[0] + radius)
+            ax.set_ylim3d(center[1] - radius, center[1] + radius)
+            ax.set_zlim3d(center[2] - radius, center[2] + radius)
 
         ax.grid(False)
         if axes is None:
@@ -602,9 +639,10 @@ class AggMesh(Mesh):
             Array of lenght `num_cells` of the computed circle ratios.
         """
         circumscribed_diams = self.mesh_elements_sizes()
-        inscribed_diams = np.array([C.inscribed_diameter(self.Coords[i])
-                                    for i, C in enumerate(self.Cells)])
-        return inscribed_diams/circumscribed_diams
+        inscribed_diams = np.array(
+            [C.inscribed_diameter(self.Coords[i]) for i, C in enumerate(self.Cells)]
+        )
+        return inscribed_diams / circumscribed_diams
 
     def area_perimeter_ratio(self) -> np.ndarray:
         """Compute compactness metric of all mesh elements.
@@ -629,7 +667,7 @@ class AggMesh(Mesh):
             else:
                 areas = np.array([C.area() for C in self.Cells])
 
-            return 4*np.pi*areas/np.square(perimeters)
+            return 4 * np.pi * areas / np.square(perimeters)
         else:
             # Sphericity
             surf_areas = np.array([C.surface_area() for C in self.Cells])
@@ -637,7 +675,7 @@ class AggMesh(Mesh):
                 volumes = self.Volumes.reshape(-1)
             else:
                 volumes = np.array([C.volume() for C in self.Cells])
-            return (np.pi**(1/3)*(6*volumes)**(2/3))/surf_areas
+            return (np.pi ** (1 / 3) * (6 * volumes) ** (2 / 3)) / surf_areas
 
     def uniformity_factor(self) -> np.ndarray:
         """Compute uniformity factor of all mesh elements.
@@ -656,7 +694,7 @@ class AggMesh(Mesh):
             Array of lenght `num_cells` of the computed uniformity factors.
         """
         h = self.mesh_elements_sizes()
-        return h/max(h)
+        return h / max(h)
 
     def volumes_difference(self, to_one: bool = False) -> np.ndarray:
         """Compute volume difference of all mesh elements.
@@ -676,9 +714,9 @@ class AggMesh(Mesh):
             Array of lenght `num_cells` of the computed volume differences.
         """
         Volume_target = np.mean(self.Volumes)
-        VD = np.abs((self.Volumes-Volume_target)/Volume_target)
+        VD = np.abs((self.Volumes - Volume_target) / Volume_target)
         if to_one:
-            return 1/(1 + VD)
+            return 1 / (1 + VD)
         else:
             return VD
 
@@ -694,8 +732,12 @@ class AggMesh(Mesh):
         np.ndarray of float
             Array of lenght `num_cells` of element sizes.
         """
-        h_vect = np.array([max(pdist(self.Vertices[self.Cells[i].Nodes]))
-                          for i in range(self.num_cells)])
+        h_vect = np.array(
+            [
+                max(pdist(self.Vertices[self.Cells[i].Nodes]))
+                for i in range(self.num_cells)
+            ]
+        )
         return h_vect
 
     def get_quality_metrics(self, boxplot=False) -> np.ndarray:
@@ -754,9 +796,10 @@ class AggMesh(Mesh):
         This is intended only for agglomerated meshes where the original
         physical groups where all either 0 or 1.
         """
-        non_homogeneous = np.count_nonzero(np.logical_and(
-            self.Physical_Groups > 0, self.Physical_Groups < 1))
-        return non_homogeneous/self.num_cells
+        non_homogeneous = np.count_nonzero(
+            np.logical_and(self.Physical_Groups > 0, self.Physical_Groups < 1)
+        )
+        return non_homogeneous / self.num_cells
 
 
 class MeshDataset(Sequence):
@@ -832,7 +875,7 @@ class MeshDataset(Sequence):
         """
         self.meshes.append(mesh)
 
-    def merge(self, other_dataset: 'MeshDataset') -> None:
+    def merge(self, other_dataset: "MeshDataset") -> None:
         """Merge two datasets.
 
         Parameters
@@ -870,6 +913,7 @@ class AggMeshDataset(MeshDataset):
     meshes are either 2D or 3D, they are all homogeneous or heterogeneous),
     but there are no checks on this.
     """
+
     def __init__(self, mesh_list: list[AggMesh], name: str = None):
         super().__init__(mesh_list, name)
 
@@ -894,9 +938,15 @@ class AggMeshDataset(MeshDataset):
         for i in range(len(self)):
             start = time.time()
             quality_metrics[i] = self[i].get_mean_quality_metrics()
-            print('Computed metrics for Mesh: ', str(i),
-                  '\t\tNumber of cells:', self[i].num_cells,
-                  '\t\tElapsed time:', round(time.time()-start, 2), 's')
+            print(
+                "Computed metrics for Mesh: ",
+                str(i),
+                "\t\tNumber of cells:",
+                self[i].num_cells,
+                "\t\tElapsed time:",
+                round(time.time() - start, 2),
+                "s",
+            )
 
         # create boxplot
         if boxplot:
@@ -946,46 +996,51 @@ class AggMeshDataset(MeshDataset):
 
         for model in models:
             model_name = model.__class__.__name__
-            print('-------------Agglomerating '+model_name+'---------------')
+            print("-------------Agglomerating " + model_name + "---------------")
             model_agg = model.agglomerate_dataset(self, **kwargs)
             model_quality = model_agg.compute_quality_metrics(boxplot=False)
             quality_metrics.append(model_quality)
         if boxplot:
-            group_labels = ['Circle Ratio', 'Area Perimeter Ratio',
-                            'Uniformity Factor', 'Volumes Difference']
+            group_labels = [
+                "Circle Ratio",
+                "Area Perimeter Ratio",
+                "Uniformity Factor",
+                "Volumes Difference",
+            ]
             legend_labels = [model.__class__.__name__ for model in models]
-            create_grouped_boxplots(quality_metrics,
-                                    legend_labels=legend_labels,
-                                    group_labels=group_labels)
+            create_grouped_boxplots(
+                quality_metrics, legend_labels=legend_labels, group_labels=group_labels
+            )
         return quality_metrics
 
 
-def _boxplot_qualities(quality_metrics: np.ndarray,
-                       ax: plt.Axes | None = None):
+def _boxplot_qualities(quality_metrics: np.ndarray, ax: plt.Axes | None = None):
     """Create boxplot of quality metrics."""
     # create boxplot
     if ax is None:
         _, ax = plt.subplots()
-    labels = ['CR', 'APR', 'UF', 'VD']
-    colors = ['tab:red', 'tab:blue', 'tab:green', 'tab:purple']
+    labels = ["CR", "APR", "UF", "VD"]
+    colors = ["tab:red", "tab:blue", "tab:green", "tab:purple"]
     bplot = ax.boxplot(quality_metrics, patch_artist=True, labels=labels)
-    for patch, color in zip(bplot['boxes'], colors):
+    for patch, color in zip(bplot["boxes"], colors):
         patch.set_facecolor(color)
-    ax.set_title('Quality metrics')
+    ax.set_title("Quality metrics")
     ax.grid(True)
 
 
-def create_grouped_boxplots(arrays,
-                            colors=None,
-                            title=None,
-                            legend_labels=None,
-                            group_labels=None,
-                            label_fontsize=12,
-                            widths=0.6,
-                            boxplot_spacing=1,
-                            groups_spacing=1,
-                            ylim=1.141,
-                            figsize=(18, 8)):
+def create_grouped_boxplots(
+    arrays,
+    colors=None,
+    title=None,
+    legend_labels=None,
+    group_labels=None,
+    label_fontsize=12,
+    widths=0.6,
+    boxplot_spacing=1,
+    groups_spacing=1,
+    ylim=1.141,
+    figsize=(18, 8),
+):
     """Creates grouped boxplots from a list of 2D numpy arrays.
 
     Parameters
@@ -1014,10 +1069,10 @@ def create_grouped_boxplots(arrays,
     if colors is None:
         colors = list(mcolors.TABLEAU_COLORS.values())[:N]
     if legend_labels is None:
-        legend_labels = [f'Matrix {i+1}' for i in range(N)]
+        legend_labels = [f"Matrix {i+1}" for i in range(N)]
 
     if group_labels is None:
-        group_labels = [f'Column {col+1}' for col in range(num_columns)]
+        group_labels = [f"Column {col+1}" for col in range(num_columns)]
 
     # Group data by columns
     data, positions, color_map = [], [], []
@@ -1025,32 +1080,34 @@ def create_grouped_boxplots(arrays,
     for col in range(num_columns):
         for i, array in enumerate(arrays):
             data.append(array[:, col])
-            positions.append(col*(N+1)*groups_spacing + i*boxplot_spacing + 1)
+            positions.append(col * (N + 1) * groups_spacing + i * boxplot_spacing + 1)
             color_map.append(colors[i])
 
     # Plot the boxplots
     plt.figure(figsize=figsize)
 
-    box = plt.boxplot(data, patch_artist=True,
-                      positions=positions, widths=widths)
-    plt.setp(box['medians'], color='black')
+    box = plt.boxplot(data, patch_artist=True, positions=positions, widths=widths)
+    plt.setp(box["medians"], color="black")
 
     # Color the boxes
-    for patch, color in zip(box['boxes'], color_map):
+    for patch, color in zip(box["boxes"], color_map):
         patch.set_facecolor(color)
 
     # Set the x-ticks to be at the center of each group of boxplots
-    plt.xticks([(col + 1/2) * (N + 1) * groups_spacing
-                for col in range(num_columns)],
-               group_labels, fontsize=label_fontsize, fontweight='bold')
+    plt.xticks(
+        [(col + 1 / 2) * (N + 1) * groups_spacing for col in range(num_columns)],
+        group_labels,
+        fontsize=label_fontsize,
+        fontweight="bold",
+    )
 
     # Add legend
     for i in range(N):
         plt.plot([], c=colors[i], label=legend_labels[i])
     plt.legend(fontsize=label_fontsize)
-    plt.grid(axis='y')
+    plt.grid(axis="y")
     # ax.xlabel('Groups')
-    plt.ylabel('Values', fontsize=label_fontsize, fontweight='bold')
+    plt.ylabel("Values", fontsize=label_fontsize, fontweight="bold")
     plt.ylim((-0.02, ylim))
     if title is not None:
         plt.title(title)

@@ -19,10 +19,16 @@ To use magnet, you will need the following python packages:
 * metis-python
 * scikit-learn
 
+They are automatically installed when running
+
+.. code:: console
+
+    $ pip install .
+
 .. warning::
 
     If you intend to use the `Lymph` interface, to be able to call Python from MATLAB, you will
-    need a compatible Python version. See the :doc:`Lymph <lymph>` section for more details.
+    need a compatible Python version. See the :doc:`Lymph <lymph_interface/lymph>` section for more details.
 
 To avoid conflicts between different packages, it is suggested to create a new virtual environment:
 
@@ -30,12 +36,20 @@ To avoid conflicts between different packages, it is suggested to create a new v
 
     $ python -m venv .myvenv
 
-You will also need to install Metis locally.
+You will also need to install Metis locally. See `metispy <https://github.com/james77777778/metis_python>`_ and `METIS <https://github.com/KarypisLab/METIS>`_ for more details.
 
 .. note::
 
     If you are not able to import ``metispy``, try to set the environment variable 'METIS_DLL'
     to the exact path of the python shared library file `metis.dll` in the `__init__.py` of the package.
+
+.. _test cases:
+
+Test cases
+================
+
+This package comes with a set of examples extracted from the test cases of the Magnet white paper.
+They can be found in the folder ``examples``. They can be easily run in Google Colab as show in ``examples/python/examples.ipynb``.
 
 .. _dataset_creation:
 

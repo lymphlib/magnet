@@ -15,14 +15,14 @@ Contents
 ========
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
-    Reference manual <manual>
+    User guides <tutorials>
 
 .. toctree::
     :maxdepth: 2
 
-    User guides <tutorials>
+    Reference manual <manual>
 
 .. toctree::
     :maxdepth: 2

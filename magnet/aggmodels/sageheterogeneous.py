@@ -4,13 +4,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.data import Data
-from torch_geometric.utils import degree, from_scipy_sparse_matrix, add_self_loops, scatter
+from torch_geometric.utils import (
+    degree,
+    from_scipy_sparse_matrix,
+    add_self_loops,
+    scatter,
+)
 from torch_geometric.nn.conv import SAGEConv
 
-from ..mesh import Mesh
-from .gnn import GeometricGNN
-from ..graph_utils import align_to_x_axis
-from .._absaggmodels import DEVICE
+from magnet.mesh import Mesh
+from magnet.aggmodels.gnn import GeometricGNN
+from magnet.graph_utils import align_to_x_axis
+from magnet._absaggmodels import DEVICE
 
 
 class GNNHeterogeneous(GeometricGNN):
@@ -38,19 +43,21 @@ class GNNHeterogeneous(GeometricGNN):
         """
         d = degree(graph.edge_index[0], num_nodes=y.size(0))
         gamma = torch.t(y) @ d
-        c = torch.sum(y[graph.edge_index[0], 0]*y[graph.edge_index[1], 1])
+        c = torch.sum(y[graph.edge_index[0], 0] * y[graph.edge_index[1], 1])
         loss1 = torch.sum(torch.div(c, gamma))
-        loss2 = (torch.sum(y[:, 0]*graph.x[:, -1])
-                 + torch.sum(y[:, 1]*(1-graph.x[:, -1])))/graph.num_nodes
-        # 0.000171875
-        return (loss1 + coeff*loss2).to(DEVICE)
+        loss2 = (
+            torch.sum(y[:, 0] * graph.x[:, -1])
+            + torch.sum(y[:, 1] * (1 - graph.x[:, -1]))
+        ) / graph.num_nodes
+        return (loss1 + coeff * loss2).to(DEVICE)
 
-    def get_sample(self,
-                   mesh: Mesh,
-                   randomRotate=False,
-                   selfloop=False,
-                   device=DEVICE,
-                   ) -> Data:
+    def get_sample(
+        self,
+        mesh: Mesh,
+        randomRotate=False,
+        selfloop=False,
+        device=DEVICE,
+    ) -> Data:
         """Returns a graph data structure sample for training.
 
         Parameters
@@ -70,7 +77,9 @@ class GNNHeterogeneous(GeometricGNN):
         """
         coords_sample = torch.tensor(mesh.Coords, dtype=torch.float, device=device)
         volumes_sample = torch.tensor(mesh.Volumes, dtype=torch.float, device=device)
-        physical_groups_sample = torch.tensor(mesh.Physical_Groups, dtype=torch.float, device=device)
+        physical_groups_sample = torch.tensor(
+            mesh.Physical_Groups, dtype=torch.float, device=device
+        )
 
         if randomRotate:
             coords_sample = self._randomrotate(coords_sample)
@@ -104,23 +113,25 @@ class GNNHeterogeneous(GeometricGNN):
         physical group, which is averaged across neighbours to avoid
         discontinuities that may hamper the GNN learning.
         """
-        coords_sample = x[:, :(x.shape[1]-2)]
+        coords_sample = x[:, : (x.shape[1] - 2)]
         volumes_sample = x[:, -2].unsqueeze(-1)
         physical_groups_sample = x[:, -1].unsqueeze(-1)
 
         coords_sample = align_to_x_axis(coords_sample)
-        coords_sample = (coords_sample-torch.mean(coords_sample, dim=0)
-                         )/torch.std(coords_sample, dim=0)
+        coords_sample = (coords_sample - torch.mean(coords_sample, dim=0)) / torch.std(
+            coords_sample, dim=0
+        )
 
-        volumes_sample = volumes_sample/torch.max(volumes_sample, 0).values
-        physical_groups_sample = self._average_physical_group(physical_groups_sample, edge_index)
+        volumes_sample = volumes_sample / torch.max(volumes_sample, 0).values
+        physical_groups_sample = self._average_physical_group(
+            physical_groups_sample, edge_index
+        )
 
         return torch.cat([coords_sample, volumes_sample, physical_groups_sample], -1)
 
-    def _average_physical_group(self, x: torch.Tensor,
-                                edge_index: torch.Tensor,
-                                flow: str = 'source_to_target'
-                                ) -> torch.Tensor:
+    def _average_physical_group(
+        self, x: torch.Tensor, edge_index: torch.Tensor, flow: str = "source_to_target"
+    ) -> torch.Tensor:
         """Compute average physical goup across neighbouring elements.
 
         If the averaged physical group is identically zero across the graph,
@@ -147,11 +158,11 @@ class GNNHeterogeneous(GeometricGNN):
         edge_index, _ = add_self_loops(edge_index, num_nodes=num_nodes)
 
         row, col = edge_index
-        row, col = (row, col) if flow == 'source_to_target' else (col, row)
-        x = scatter(x[row], col, dim=0, dim_size=num_nodes, reduce='mean')
+        row, col = (row, col) if flow == "source_to_target" else (col, row)
+        x = scatter(x[row], col, dim=0, dim_size=num_nodes, reduce="mean")
 
         if torch.equal(x, torch.zeros(num_nodes, device=x.device)):
-            x = 0.5*torch.ones(num_nodes, device=x.device)
+            x = 0.5 * torch.ones(num_nodes, device=x.device)
 
         return x
 
@@ -186,17 +197,22 @@ class SageHeterogeneous(GNNHeterogeneous):
         Activation function.
     """
 
-    def __init__(self, hidden_units: int, lin_hidden_units: int,
-                 num_features: int, out_classes: int = 2):
+    def __init__(
+        self,
+        hidden_units: int,
+        lin_hidden_units: int,
+        num_features: int,
+        out_classes: int = 2,
+    ):
         super().__init__()
-        self.conv1 = SAGEConv(num_features, hidden_units, aggr='mean')
-        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr='mean')
+        self.conv1 = SAGEConv(num_features, hidden_units, aggr="mean")
+        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr="mean")
         self.lin1 = nn.Linear(hidden_units, lin_hidden_units)
-        self.lin2 = nn.Linear(lin_hidden_units, lin_hidden_units//2)
-        self.lin3 = nn.Linear(lin_hidden_units//2, lin_hidden_units//8)
-        self.lin_last = nn.Linear(lin_hidden_units//8, out_classes)
+        self.lin2 = nn.Linear(lin_hidden_units, lin_hidden_units // 2)
+        self.lin3 = nn.Linear(lin_hidden_units // 2, lin_hidden_units // 8)
+        self.lin_last = nn.Linear(lin_hidden_units // 8, out_classes)
         self.act = torch.tanh
 
     def forward(self, x, edge_index):

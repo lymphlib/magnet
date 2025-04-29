@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 
-'''Type definitions.'''
+"""Type definitions."""
 
 adj_ind_type = np.uint8  # index of adjacency matrix
 

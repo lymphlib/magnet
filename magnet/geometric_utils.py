@@ -4,7 +4,6 @@ Contains functions used for geometric operations, e.g. volume, centroid and
 distance computations.
 """
 
-
 import numpy as np
 from math import factorial
 from scipy.spatial import ConvexHull, Delaunay
@@ -49,8 +48,11 @@ def tetrahedron_volume(vertices: np.ndarray) -> float:
     float
         The volume of the simplex.
     """
-    return np.abs(np.linalg.det([np.append(point, [1]) for point in vertices])
-                  )/factorial(vertices.shape[-1])  # /factorial(dimension)
+    return np.abs(
+        np.linalg.det([np.append(point, [1]) for point in vertices])
+    ) / factorial(
+        vertices.shape[-1]
+    )  # /factorial(dimension)
 
 
 def shoelace_formula(v: np.ndarray) -> float:
@@ -72,9 +74,9 @@ def shoelace_formula(v: np.ndarray) -> float:
         The computed area.
     """
     n_vert = len(v)
-    return 0.5*np.sum(np.array([
-        v[i-1, 0]*v[i, 1] - v[i, 0]*v[i-1, 1]
-        for i in range(n_vert)]))
+    return 0.5 * np.sum(
+        np.array([v[i - 1, 0] * v[i, 1] - v[i, 0] * v[i - 1, 1] for i in range(n_vert)])
+    )
 
 
 def polygon_centroid(v: np.ndarray) -> np.ndarray:
@@ -93,15 +95,24 @@ def polygon_centroid(v: np.ndarray) -> np.ndarray:
         The computed area.
     """
     n_vert = len(v)
-    cross_products = np.array([v[i-1, 0]*v[i, 1] - v[i, 0]*v[i-1, 1]
-                               for i in range(n_vert)])
-    area = 0.5*np.sum(cross_products)  # shoelace formula
-    return np.array([
-        np.sum(np.array([(v[i-1, 0]+v[i, 0])*cross_products[i]
-                         for i in range(n_vert)])),
-        np.sum(np.array([(v[i-1, 1]+v[i, 1])*cross_products[i]
-                         for i in range(n_vert)]))
-        ])/(6*area)
+    cross_products = np.array(
+        [v[i - 1, 0] * v[i, 1] - v[i, 0] * v[i - 1, 1] for i in range(n_vert)]
+    )
+    area = 0.5 * np.sum(cross_products)  # shoelace formula
+    return np.array(
+        [
+            np.sum(
+                np.array(
+                    [(v[i - 1, 0] + v[i, 0]) * cross_products[i] for i in range(n_vert)]
+                )
+            ),
+            np.sum(
+                np.array(
+                    [(v[i - 1, 1] + v[i, 1]) * cross_products[i] for i in range(n_vert)]
+                )
+            ),
+        ]
+    ) / (6 * area)
 
 
 def polygon_area_vector(v: np.ndarray) -> np.ndarray:
@@ -122,8 +133,8 @@ def polygon_area_vector(v: np.ndarray) -> np.ndarray:
     np.ndarray
         Polygon area vector.
     """
-    area = sum([np.cross(v[i-1], v[i]) for i in range(len(v))])
-    return area/2
+    area = sum([np.cross(v[i - 1], v[i]) for i in range(len(v))])
+    return area / 2
 
 
 def convexHull_center(vertices: np.ndarray) -> np.ndarray:
@@ -158,9 +169,9 @@ def convexHull_center(vertices: np.ndarray) -> np.ndarray:
         centre = np.zeros(dim)
         for simplex in T.simplices:
             vol = tetrahedron_volume(vertices[simplex])
-            centre += vol*tetrahedron_center(vertices[simplex])
+            centre += vol * tetrahedron_center(vertices[simplex])
             total_volume += vol
-        return centre/total_volume
+        return centre / total_volume
 
 
 def maximum_sq_distance(points: np.ndarray) -> float:
@@ -186,10 +197,9 @@ def maximum_sq_distance(points: np.ndarray) -> float:
     computed first to speed up computation.
     """
     if len(points) < 750:
-        return pdist(points, metric='sqeuclidean').max()
+        return pdist(points, metric="sqeuclidean").max()
     else:
-        return pdist(points[ConvexHull(points).vertices],
-                     metric='sqeuclidean').max()
+        return pdist(points[ConvexHull(points).vertices], metric="sqeuclidean").max()
 
 
 def project(x1: np.ndarray, x2: np.ndarray, p: np.ndarray) -> float:
@@ -210,18 +220,15 @@ def project(x1: np.ndarray, x2: np.ndarray, p: np.ndarray) -> float:
     float
         Projection value.
     """
-    return np.dot(p-x1, x2-x1)/np.dot(x2-x1, x2-x1)
+    return np.dot(p - x1, x2 - x1) / np.dot(x2 - x1, x2 - x1)
 
 
 def _point_at(A, B, t):
     """Point on line (`A`, `B`) individuated by scalar `t`."""
-    return A+t*(B-A)
+    return A + t * (B - A)
 
 
-def closest_to_segment(x1: np.ndarray,
-                       x2: np.ndarray,
-                       p: np.ndarray
-                       ) -> np.ndarray:
+def closest_to_segment(x1: np.ndarray, x2: np.ndarray, p: np.ndarray) -> np.ndarray:
     """Compute the point of a segment closest to 1a given point.
 
     Computes the the point of the segment of extremes `x1`, `x2` that is
@@ -272,28 +279,28 @@ def closest_to_triangle(triangle_v: np.ndarray, p: np.ndarray) -> np.ndarray:
     # Case 1: one of the vertices is closest:
     uab = project(A, B, p)
     uca = project(C, A, p)
-    if (uca > 1 and uab < 0):
+    if uca > 1 and uab < 0:
         return A
     ubc = project(B, C, p)
-    if (uab > 1 and ubc < 0):
+    if uab > 1 and ubc < 0:
         return B
-    if (ubc > 1 and uca < 0):
+    if ubc > 1 and uca < 0:
         return C
 
     # Case 2: the closest point is on one of the edges:
-    tri_normal = np.cross(B-A, C-A)
-    if (0 < uab and uab < 1 and np.dot(np.cross(tri_normal, B-A), p-A) < 0):
+    tri_normal = np.cross(B - A, C - A)
+    if 0 < uab and uab < 1 and np.dot(np.cross(tri_normal, B - A), p - A) < 0:
         return _point_at(A, B, uab)
 
-    if (0 < ubc and ubc < 1 and np.dot(np.cross(tri_normal, C-B), p-B) < 0):
+    if 0 < ubc and ubc < 1 and np.dot(np.cross(tri_normal, C - B), p - B) < 0:
         return _point_at(B, C, ubc)
 
-    if (0 < uca and uca < 1 and np.dot(np.cross(tri_normal, A-C), p-C) < 0):
+    if 0 < uca and uca < 1 and np.dot(np.cross(tri_normal, A - C), p - C) < 0:
         return _point_at(C, A, uca)
 
     # If we are not in any of the above cases, the closest point is in the
     # interior and we simply project onto the triangle plane:
-    return p-np.dot(p-A, tri_normal)/np.dot(tri_normal, tri_normal)*tri_normal
+    return p - np.dot(p - A, tri_normal) / np.dot(tri_normal, tri_normal) * tri_normal
 
 
 def closest_to_face(face_verts: np.ndarray, p: np.ndarray) -> np.ndarray:
@@ -321,20 +328,26 @@ def closest_to_face(face_verts: np.ndarray, p: np.ndarray) -> np.ndarray:
         return closest_to_triangle(face_verts, p)
     else:
         face_verts = face_verts.T
-        return face_verts@linear_constrained_least_squares(
-            face_verts, p, np.ones(n_vert), 1,
-            np.zeros(n_vert), np.ones(n_vert),
-            np.mean(face_verts, axis=1))
+        return face_verts @ linear_constrained_least_squares(
+            face_verts,
+            p,
+            np.ones(n_vert),
+            1,
+            np.zeros(n_vert),
+            np.ones(n_vert),
+            np.mean(face_verts, axis=1),
+        )
 
 
-def linear_constrained_least_squares(C: np.ndarray,
-                                     d: np.ndarray,
-                                     Aeq: np.ndarray,
-                                     beq: np.ndarray,
-                                     lb: np.ndarray,
-                                     ub: np.ndarray,
-                                     x0: np.ndarray
-                                     ) -> np.ndarray:
+def linear_constrained_least_squares(
+    C: np.ndarray,
+    d: np.ndarray,
+    Aeq: np.ndarray,
+    beq: np.ndarray,
+    lb: np.ndarray,
+    ub: np.ndarray,
+    x0: np.ndarray,
+) -> np.ndarray:
     """Solve linear constrained least squares problem.
 
     The problem solved is : minimize 0.5 * ||`C`@x - `d`||**2 subject to the
@@ -367,9 +380,11 @@ def linear_constrained_least_squares(C: np.ndarray,
     very general optimizer, so it is not optimized for this problem.
     As such, the function can be slow.
     """
+
     def objective(x):
-        return 0.5 * np.linalg.norm(np.dot(C, x) - d)**2
-    constraints = [{'type': 'eq', 'fun': lambda x: beq - np.dot(Aeq, x)}]
+        return 0.5 * np.linalg.norm(np.dot(C, x) - d) ** 2
+
+    constraints = [{"type": "eq", "fun": lambda x: beq - np.dot(Aeq, x)}]
     bounds = [(lb[i], ub[i]) for i in range(len(lb))]
     result = minimize(objective, x0, constraints=constraints, bounds=bounds)
 

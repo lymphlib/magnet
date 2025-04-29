@@ -10,10 +10,18 @@ Magnet
    :template: custom-module-template.rst
    :recursive:
 
-   magnet.aggmodels
-   magnet.io
-   magnet.generate
-   magnet.mesh
-   magnet.cell
-   magnet.geometric_utils
-   magnet.losses
+   aggmodels
+   aggmodels.gnn
+   aggmodels.kmeans
+   aggmodels.metis
+   aggmodels.refiner
+   aggmodels.rlpartitioner
+   aggmodels.sagebase
+   aggmodels.sageheterogeneous
+   _absaggmodels
+   io
+   generate
+   mesh
+   cell
+   geometric_utils
+   graph_utils

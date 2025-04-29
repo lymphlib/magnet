@@ -4,14 +4,21 @@ __pycache__
 # dependencies
 METIS
 lymph
-lymph new
+
+# dataset
+data/training*
+data/validation*
+data/inclusions*.vtk
+data/logo.vtk
+
+# outputs
+data/*.png
+data/images
 
 # documentation output
 build
 _autosummary
+docs/*.yml
 
-*.stl
-*.vtk
-*.ipynb
-*.yml
-images
+# package
+*.egg-info

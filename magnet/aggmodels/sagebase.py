@@ -5,7 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv
 
-from .gnn import GNN, GeometricGNN
+from magnet.aggmodels.gnn import GeometricGNN
+
 
 class SageBase2D(GeometricGNN):
     """GNN with 4 SAGE convolutional layers and 3 linear layers.
@@ -35,13 +36,18 @@ class SageBase2D(GeometricGNN):
         Activation function.
     """
 
-    def __init__(self, hidden_units: int = 64, lin_hidden_units: int = 32,
-                 num_features: int = 3, out_classes: int = 2):
+    def __init__(
+        self,
+        hidden_units: int = 64,
+        lin_hidden_units: int = 32,
+        num_features: int = 3,
+        out_classes: int = 2,
+    ):
         super().__init__()
-        self.conv1 = SAGEConv(num_features, hidden_units, aggr='mean')
-        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr='mean')
+        self.conv1 = SAGEConv(num_features, hidden_units, aggr="mean")
+        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr="mean")
         self.lin1 = nn.Linear(hidden_units, lin_hidden_units)
         self.lin2 = nn.Linear(lin_hidden_units, lin_hidden_units)
         self.lin_last = nn.Linear(lin_hidden_units, out_classes)
@@ -88,16 +94,22 @@ class SageBase(GeometricGNN):
         Activation function.
     """
 
-    def __init__(self, hidden_units: int, lin_hidden_units: int, num_features: int, out_classes: int = 2):
+    def __init__(
+        self,
+        hidden_units: int,
+        lin_hidden_units: int,
+        num_features: int,
+        out_classes: int = 2,
+    ):
         super().__init__()
-        self.conv1 = SAGEConv(num_features, hidden_units, aggr='mean')
-        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr='mean')
-        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr='mean')
+        self.conv1 = SAGEConv(num_features, hidden_units, aggr="mean")
+        self.conv2 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv3 = SAGEConv(hidden_units, hidden_units, aggr="mean")
+        self.conv4 = SAGEConv(hidden_units, hidden_units, aggr="mean")
         self.lin1 = nn.Linear(hidden_units, lin_hidden_units)
-        self.lin2 = nn.Linear(lin_hidden_units, lin_hidden_units//2)
-        self.lin3 = nn.Linear(lin_hidden_units//2, lin_hidden_units//8)
-        self.lin_last = nn.Linear(lin_hidden_units//8, out_classes)
+        self.lin2 = nn.Linear(lin_hidden_units, lin_hidden_units // 2)
+        self.lin3 = nn.Linear(lin_hidden_units // 2, lin_hidden_units // 8)
+        self.lin_last = nn.Linear(lin_hidden_units // 8, out_classes)
         self.act = torch.tanh
 
     def forward(self, x, edge_index):
@@ -152,9 +164,9 @@ class SageRes(GeometricGNN):
         x2 = self.act(self.conv2(x1, edge_index))
         x3 = self.act(self.conv3(x2, edge_index))
         x4 = self.act(self.conv4(x3, edge_index))
-        x = self.act(self.conv1r(x4, edge_index))+x3
-        x = self.act(self.conv2r(x, edge_index))+x2
-        x = self.act(self.conv3r(x, edge_index))+x1
+        x = self.act(self.conv1r(x4, edge_index)) + x3
+        x = self.act(self.conv2r(x, edge_index)) + x2
+        x = self.act(self.conv3r(x, edge_index)) + x1
         x = self.act(self.lin1(x))
         x = self.act(self.lin2(x))
         x = self.lin_last(x)

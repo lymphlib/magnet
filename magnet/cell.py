@@ -7,10 +7,16 @@ from abc import ABC, abstractmethod
 import warnings
 import numpy as np
 from scipy.stats import uniform_direction
-from magnet.geometric_utils import (shoelace_formula, polygon_centroid,
-                                    tetrahedron_volume, tetrahedron_center,
-                                    closest_to_segment, closest_to_face,
-                                    convexHull_center, polygon_area_vector)
+from magnet.geometric_utils import (
+    shoelace_formula,
+    polygon_centroid,
+    tetrahedron_volume,
+    tetrahedron_center,
+    closest_to_segment,
+    closest_to_face,
+    convexHull_center,
+    polygon_area_vector,
+)
 
 TOL = 1e-8
 
@@ -76,10 +82,12 @@ class Cell(ABC):
 
 class Polygon(Cell):
     """Generic 2D polygonal cell."""
+
     def _make_faces(self) -> None:
         """Creates global indexing of face nodes based on local indexing."""
-        self.Faces = [[self.Nodes[i-1], self.Nodes[i]]
-                      for i in range(len(self.Nodes))]
+        self.Faces = [
+            [self.Nodes[i - 1], self.Nodes[i]] for i in range(len(self.Nodes))
+        ]
 
     def volume_center(self):
         """Compute the area and centroid of the polygon.
@@ -139,7 +147,7 @@ class Polygon(Cell):
         """
         perimeter = 0
         for i in range(len(self.Nodes)):
-            perimeter += np.linalg.norm(self.Vertices[i]-self.Vertices[i-1])
+            perimeter += np.linalg.norm(self.Vertices[i] - self.Vertices[i - 1])
         return perimeter
 
     def is_inside(self, p: np.ndarray) -> bool:
@@ -165,8 +173,8 @@ class Polygon(Cell):
         for face in self.Faces:
             v = self.MeshVertices[face]
             # compute intersection between the ray and the edge line:
-            A = np.column_stack((v[1]-v[0], -ray))
-            x = np.linalg.solve(A, p-v[0])
+            A = np.column_stack((v[1] - v[0], -ray))
+            x = np.linalg.solve(A, p - v[0])
             if x[1] > 0 and x[0] > 0 and x[0] < 1:
                 intersections += 1
 
@@ -194,9 +202,14 @@ class Polygon(Cell):
         if not self.is_inside(center):
             return 0
         else:
-            return 2*min([np.linalg.norm(center-closest_to_segment(
-                *self.MeshVertices[face], p=center))
-                for face in self.Faces])
+            return 2 * min(
+                [
+                    np.linalg.norm(
+                        center - closest_to_segment(*self.MeshVertices[face], p=center)
+                    )
+                    for face in self.Faces
+                ]
+            )
 
     def is_counterclockwise(self):
         """Check if polygon vertices are ordered counterclockwise.
@@ -263,19 +276,21 @@ class Polygon(Cell):
             current_node = next_node
 
         if len(perimeter) < len(self.Nodes):
-            warnings.warn(
-                'Polygon is not simply connected. Bad things will happen.')
+            warnings.warn("Polygon is not simply connected. Bad things will happen.")
 
         self.Nodes = perimeter
 
 
 class Triangle(Polygon):
     """Triangular cell."""
+
     def _make_faces(self) -> None:
         """Creates global indexing of face nodes based on local indexing."""
-        self.Faces = [[self.Nodes[0], self.Nodes[1]],
-                      [self.Nodes[1], self.Nodes[2]],
-                      [self.Nodes[2], self.Nodes[0]]]
+        self.Faces = [
+            [self.Nodes[0], self.Nodes[1]],
+            [self.Nodes[1], self.Nodes[2]],
+            [self.Nodes[2], self.Nodes[0]],
+        ]
 
     def area(self):
         """Compute the area of the triangle.
@@ -312,13 +327,14 @@ class Quad(Polygon):
 
 class Polyhedron(Cell):
     """Generic 3D polyhedral cell."""
+
     def _make_faces(self) -> None:
         raise NotImplementedError(
-            "Not able to reconstruct faces of a generic polyhedron.")
+            "Not able to reconstruct faces of a generic polyhedron."
+        )
 
     def volume_center(self):
-        raise NotImplementedError(
-            "Polyhedron volume and centroid not implemented.")
+        raise NotImplementedError("Polyhedron volume and centroid not implemented.")
 
     def volume(self):
         """Compute the volume of the polyhedron.
@@ -341,7 +357,7 @@ class Polyhedron(Cell):
             face_vertices = self.MeshVertices[face]
             area_vector = polygon_area_vector(face_vertices)
             volume += np.dot(area_vector, self.MeshVertices[0])
-        return abs(volume)/3
+        return abs(volume) / 3
 
     def is_inside(self, p):
         """Check if a point is inside the polyhedron.
@@ -367,13 +383,13 @@ class Polyhedron(Cell):
         for face in self.Faces:
             v = self.MeshVertices[face]
             # compute intersection of ray with face plane
-            n = np.cross(v[1]-v[0], v[2]-v[0])  # plane normal
-            a = np.dot(n, v[0]-p)/np.dot(n, ray)
+            n = np.cross(v[1] - v[0], v[2] - v[0])  # plane normal
+            a = np.dot(n, v[0] - p) / np.dot(n, ray)
             if a > 0:
-                intersection = p + a*ray  # intersection with face plane
+                intersection = p + a * ray  # intersection with face plane
                 c = closest_to_face(v, intersection)
                 # if the intersection with the plane is in the triangle:
-                if all(np.abs(intersection-c) < TOL):
+                if all(np.abs(intersection - c) < TOL):
                     n_intersections += 1
 
         # if the number of intersection is odd, the point is inside.
@@ -413,7 +429,7 @@ class Polyhedron(Cell):
                 c = closest_to_face(self.MeshVertices[face], p=center)
                 dist = np.linalg.norm(center - c)
                 radius = min(radius, dist)
-            return 2*radius
+            return 2 * radius
 
     def surface_area(self) -> float:
         """Compute the surface area of the cell.
@@ -438,10 +454,12 @@ class Polyhedron(Cell):
 class Tetrahedron(Polyhedron):
     def _make_faces(self) -> None:
         """Creates global indexing of face nodes based on local indexing."""
-        self.Faces = [[self.Nodes[0], self.Nodes[1], self.Nodes[2]],
-                      [self.Nodes[0], self.Nodes[1], self.Nodes[3]],
-                      [self.Nodes[0], self.Nodes[2], self.Nodes[3]],
-                      [self.Nodes[1], self.Nodes[2], self.Nodes[3]]]
+        self.Faces = [
+            [self.Nodes[0], self.Nodes[1], self.Nodes[2]],
+            [self.Nodes[0], self.Nodes[1], self.Nodes[3]],
+            [self.Nodes[0], self.Nodes[2], self.Nodes[3]],
+            [self.Nodes[1], self.Nodes[2], self.Nodes[3]],
+        ]
 
     def volume_center(self):
         """Compute the volume and centroid of the tetrahedron.
@@ -490,13 +508,16 @@ class Tetrahedron(Polyhedron):
 
 class Hexahedron(Polyhedron):
     """Creates global indexing of face nodes based on local indexing."""
+
     def _make_faces(self) -> None:
-        self.Faces = [[self.Nodes[0], self.Nodes[1], self.Nodes[2], self.Nodes[3]],
-                      [self.Nodes[0], self.Nodes[1], self.Nodes[5], self.Nodes[4]],
-                      [self.Nodes[1], self.Nodes[2], self.Nodes[6], self.Nodes[5]],
-                      [self.Nodes[2], self.Nodes[3], self.Nodes[7], self.Nodes[6]],
-                      [self.Nodes[3], self.Nodes[0], self.Nodes[4], self.Nodes[7]],
-                      [self.Nodes[4], self.Nodes[5], self.Nodes[6], self.Nodes[7]]]
+        self.Faces = [
+            [self.Nodes[0], self.Nodes[1], self.Nodes[2], self.Nodes[3]],
+            [self.Nodes[0], self.Nodes[1], self.Nodes[5], self.Nodes[4]],
+            [self.Nodes[1], self.Nodes[2], self.Nodes[6], self.Nodes[5]],
+            [self.Nodes[2], self.Nodes[3], self.Nodes[7], self.Nodes[6]],
+            [self.Nodes[3], self.Nodes[0], self.Nodes[4], self.Nodes[7]],
+            [self.Nodes[4], self.Nodes[5], self.Nodes[6], self.Nodes[7]],
+        ]
 
     def volume_center(self) -> tuple[float, np.ndarray]:
         """Compute the volume and centroid of the hexahedron.
@@ -519,29 +540,33 @@ class Hexahedron(Polyhedron):
         """
         # Division in 6 tetrahedra using the 'long diagonal' [1, 7]:
         v = self.Vertices
-        tets = [v[[1, 0, 3, 7]],
-                v[[1, 0, 4, 7]],
-                v[[1, 5, 4, 7]],
-                v[[1, 2, 3, 7]],
-                v[[1, 2, 6, 7]],
-                v[[1, 5, 6, 7]]]
+        tets = [
+            v[[1, 0, 3, 7]],
+            v[[1, 0, 4, 7]],
+            v[[1, 5, 4, 7]],
+            v[[1, 2, 3, 7]],
+            v[[1, 2, 6, 7]],
+            v[[1, 5, 6, 7]],
+        ]
         volume = 0
         centroid = np.zeros(3)
         for tet in tets:
             vol = tetrahedron_volume(tet)
             volume += vol
-            centroid += vol*tetrahedron_center(tet)
-        return volume, centroid/volume
+            centroid += vol * tetrahedron_center(tet)
+        return volume, centroid / volume
 
 
 class Pyramid(Polyhedron):
     def _make_faces(self) -> None:
         """Creates global indexing of face nodes based on local indexing."""
-        self.Faces = [[self.Nodes[0], self.Nodes[1], self.Nodes[2], self.Nodes[3]],
-                      [self.Nodes[0], self.Nodes[1], self.Nodes[4]],
-                      [self.Nodes[1], self.Nodes[2], self.Nodes[4]],
-                      [self.Nodes[2], self.Nodes[3], self.Nodes[4]],
-                      [self.Nodes[3], self.Nodes[0], self.Nodes[4]]]
+        self.Faces = [
+            [self.Nodes[0], self.Nodes[1], self.Nodes[2], self.Nodes[3]],
+            [self.Nodes[0], self.Nodes[1], self.Nodes[4]],
+            [self.Nodes[1], self.Nodes[2], self.Nodes[4]],
+            [self.Nodes[2], self.Nodes[3], self.Nodes[4]],
+            [self.Nodes[3], self.Nodes[0], self.Nodes[4]],
+        ]
 
     def volume_center(self, v: np.ndarray) -> tuple[float, np.ndarray]:
         """Compute volume and centroid of the pyramid with quadrilateral base.
@@ -563,6 +588,7 @@ class Pyramid(Polyhedron):
         vol1 = tetrahedron_volume(tet1)
         vol2 = tetrahedron_volume(tet2)
         volume = vol1 + vol2
-        centroid = (vol1*tetrahedron_center(tet1)
-                    + vol2*tetrahedron_center(tet2))/volume
+        centroid = (
+            vol1 * tetrahedron_center(tet1) + vol2 * tetrahedron_center(tet2)
+        ) / volume
         return volume, centroid

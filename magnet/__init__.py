@@ -9,20 +9,19 @@ Provides
   3. I-O of meshes.
 """
 
-# import sys
+import sys
 import os
 
 # If you have trouble importing metispy, set the path of the metis shared
 # library manually if needed, like this:
-os.environ['METIS_DLL'] = r"C:\METIS\libmetis\Release\metis.dll"
+if sys.platform == "win32":
+    os.environ["METIS_DLL"] = r"C:\METIS\libmetis\Release\metis.dll"
 
 # to avoid memory leaks on windows due to kmeans:
-# if sys.platform == 'win32':
-os.environ['OMP_NUM_THREADS'] = '1'
+if sys.platform == "win32":
+    os.environ["OMP_NUM_THREADS"] = "1"
 
 from . import aggmodels
 from . import generate
 from . import io
 from ._absaggmodels import DEVICE
-
-del os

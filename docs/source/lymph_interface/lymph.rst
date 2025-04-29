@@ -8,7 +8,7 @@ Lymph interface
     lymphcomm
 
 magnet provides an interface with ``Lymph`` (polytopal discountinuous Galerking for multi-physics).
-The :py:mod:`~magnet.lymphcomm.py` script can be called from Matlab to agglomerate a mesh using the package and return the
+The :py:mod:`~magnet.lymphcomm.py` module offers a main function (wrapped in ``bin/lymphcomm.py``) that can be called from Matlab to agglomerate a mesh using the package and return the
 relevant information to Lymph, while the ``Agglomerate.m`` function is used to call the script and for
 conversion of the mesh to the Lymph format proper.
 

@@ -42,11 +42,11 @@ import torch
 from torch_geometric.nn import graclus, avg_pool
 from torch_geometric.data import Data
 from torch_geometric.utils import one_hot, to_scipy_sparse_matrix
-from torch_geometric.utils.mask import index_to_mask, mask_to_index
+from torch_geometric.utils.mask import mask_to_index
 
-from .mesh import Mesh, AggMesh, AggMeshDataset
-from .geometric_utils import maximum_sq_distance
-from ._types import ClassList
+from magnet.mesh import Mesh, AggMesh, AggMeshDataset
+from magnet.geometric_utils import maximum_sq_distance
+from magnet._types import ClassList
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -68,13 +68,14 @@ class AgglomerationModel(ABC):
         Bisect a mesh until the agglomerated elements are small enough.
     """
 
-    def agglomerate(self,
-                    mesh: AggMesh,
-                    mode: str = 'Nref',
-                    nref: int = 7,
-                    mult_factor: float = 0.4,
-                    **kwargs
-                    ) -> AggMesh:
+    def agglomerate(
+        self,
+        mesh: AggMesh,
+        mode: str = "Nref",
+        nref: int = 7,
+        mult_factor: float = 0.4,
+        **kwargs,
+    ) -> AggMesh:
         """Agglomerate a mesh.
 
         Create a new mesh starting from `mesh` by agglomerating elements
@@ -115,30 +116,27 @@ class AgglomerationModel(ABC):
         bisection_mult_factor
         """
         match mode:
-            case 'Nref':
+            case "Nref":
                 cl = self.bisection_Nref(mesh, nref)
-            case 'mult_factor':
+            case "mult_factor":
                 cl = self.bisection_mult_factor(mesh, mult_factor)
-            case 'segregated':
+            case "segregated":
                 cl = self.bisection_segregated(mesh, mult_factor)
-            case 'multilevel':
+            case "multilevel":
                 cl = self.multilevel_bisection(mesh, nref=nref, **kwargs)
-            case 'direct_kway':
+            case "direct_kway":
                 # if isinstance(self, GNN):
                 #     raise ValueError('GNN models have no direct k-way\
                 #                      agglomeration available.')
                 cl = self.direct_k_way(mesh, k=nref, **kwargs)
             case _:
-                raise ValueError('Agglomeration mode %s does not exist.' % mode)
+                raise ValueError("Agglomeration mode %s does not exist." % mode)
 
         agg_mesh = mesh._agglomeration(classes=cl)  # may modify
 
         return agg_mesh
 
-    def agglomerate_dataset(self,
-                            dataset: AggMeshDataset,
-                            **kwargs
-                            ) -> AggMeshDataset:
+    def agglomerate_dataset(self, dataset: AggMeshDataset, **kwargs) -> AggMeshDataset:
         """Agglomerate all meshes in a dataset.
 
         Constructs a new dataset by agglomerating the meshes in a dataset.
@@ -160,34 +158,39 @@ class AgglomerationModel(ABC):
             start = time.time()
             aggl_mesh = self.agglomerate(dataset[i], **kwargs)
             output.append(aggl_mesh)
-            print('Agglomerated Mesh: ', str(i),
-                  '\t\tNumber of cells:', dataset[i].num_cells,
-                  '\t\tElapsed time:', round(time.time()-start, 2), 's')
-        return AggMeshDataset(output, name=dataset.name+'_agglomerated')
+            print(
+                "Agglomerated Mesh: ",
+                str(i),
+                "\t\tNumber of cells:",
+                dataset[i].num_cells,
+                "\t\tElapsed time:",
+                round(time.time() - start, 2),
+                "s",
+            )
+        return AggMeshDataset(output, name=dataset.name + "_agglomerated")
 
-    def coarsen(self,
-                mesh: AggMesh,
-                subset: np.ndarray,
-                mode: str = 'Nref',
-                nref: int = 7,
-                mult_factor: float = 0.4
-                ) -> AggMesh:
-        """Coarsen a subregion of the mesh.
-        """
+    def coarsen(
+        self,
+        mesh: AggMesh,
+        subset: np.ndarray,
+        mode: str = "Nref",
+        nref: int = 7,
+        mult_factor: float = 0.4,
+    ) -> AggMesh:
+        """Coarsen a subregion of the mesh."""
         match mode:
-            case 'Nref':
+            case "Nref":
                 agg_parts = self.bisection_Nref(mesh, nref, [subset])
-            case 'mult_factor':
+            case "mult_factor":
                 agg_parts = self.bisection_mult_factor(mesh, mult_factor, [subset])
-            case 'segregated':
+            case "segregated":
                 agg_parts = self.bisection_segregated(mesh, mult_factor, subset)
             case _:
-                raise ValueError('Agglomeration mode %s does not exist.' % mode)
+                raise ValueError("Agglomeration mode %s does not exist." % mode)
 
         non_agg_part = np.ones(mesh.num_cells, dtype=bool)
         non_agg_part[subset] = False
-        return mesh._agglomeration(agg_parts,
-                                   np.arange(mesh.num_cells)[non_agg_part])
+        return mesh._agglomeration(agg_parts, np.arange(mesh.num_cells)[non_agg_part])
 
     def bisect(self, mesh: Mesh) -> ClassList:
         """Bisect the mesh once.
@@ -205,8 +208,9 @@ class AgglomerationModel(ABC):
         """
         return self.bisection_Nref(mesh, 1)
 
-    def bisection_Nref(self, mesh: Mesh, Nref: int,
-                       warm_start: ClassList = None) -> ClassList:
+    def bisection_Nref(
+        self, mesh: Mesh, Nref: int, warm_start: ClassList = None
+    ) -> ClassList:
         """Bisect the mesh recursively a set number of times.
 
         The agglomearated mesh will have (at most) 2^`Nref` agglomerated
@@ -226,20 +230,23 @@ class AgglomerationModel(ABC):
             corresponding to one of the agglomerated elements.
         """
         if not isinstance(Nref, int) or Nref <= 0:
-            raise ValueError('Nref must be a positive integer.')
+            raise ValueError("Nref must be a positive integer.")
         graph = self._get_graph(mesh)
-        warm_start = [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
+        warm_start = (
+            [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
+        )
         result = []
         for part in warm_start:
             result.extend(self._bisection_Nref_recursive(mesh, graph, part, Nref))
         return result
 
-    def _bisection_Nref_recursive(self,
-                                  mesh: Mesh,
-                                  graph,
-                                  subset: np.ndarray,
-                                  NREF: int,
-                                  ) -> ClassList:
+    def _bisection_Nref_recursive(
+        self,
+        mesh: Mesh,
+        graph,
+        subset: np.ndarray,
+        NREF: int,
+    ) -> ClassList:
         """Recursive bisection algorithm.
 
         Parameters
@@ -261,9 +268,11 @@ class AgglomerationModel(ABC):
         if NREF >= 1 and len(subset) > 1:
             bipartition = self._bisect_subgraph(graph, subset, mesh.dim)
             subgraph_0_classes = self._bisection_Nref_recursive(
-                mesh, graph, bipartition[0], NREF-1)
+                mesh, graph, bipartition[0], NREF - 1
+            )
             subgraph_1_classes = self._bisection_Nref_recursive(
-                mesh, graph, bipartition[1], NREF-1)
+                mesh, graph, bipartition[1], NREF - 1
+            )
             # # reduce the indices of the subgraphs to those of the original one:
             # subgraph_0_classes = [bipartition[0][subgraph_0_classes[j]]
             #                       for j in range(len(subgraph_0_classes))]
@@ -276,9 +285,9 @@ class AgglomerationModel(ABC):
 
     # def bisection_tsize(self, mesh: Mesh, target_size: float) -> ClassList:
 
-    def bisection_mult_factor(self, mesh: Mesh, mult_factor: float,
-                              warm_start: ClassList = None
-                              ) -> ClassList:
+    def bisection_mult_factor(
+        self, mesh: Mesh, mult_factor: float, warm_start: ClassList = None
+    ) -> ClassList:
         """Bisect a mesh until the agglomerated elements are small enough.
 
         The mesh is bisected until all elements have a diameter that is less
@@ -306,11 +315,13 @@ class AgglomerationModel(ABC):
         quickly fill the RAM.
         """
         if mult_factor <= 0 or mult_factor > 1:
-            raise ValueError('Multiplicative factor must be between 0 and 1.')
+            raise ValueError("Multiplicative factor must be between 0 and 1.")
 
         graph = self._get_graph(mesh)
         target_h_sq = maximum_sq_distance(mesh.Coords) * mult_factor**2
-        bisection_classes = [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
+        bisection_classes = (
+            [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
+        )
         output = []
 
         while bisection_classes:
@@ -319,8 +330,9 @@ class AgglomerationModel(ABC):
                 if len(partition) > 1:
                     h = maximum_sq_distance(mesh.Coords[partition])
                     if h > target_h_sq:
-                        new_set.extend(self._bisect_subgraph(
-                                graph, partition, mesh.dim))
+                        new_set.extend(
+                            self._bisect_subgraph(graph, partition, mesh.dim)
+                        )
                     else:
                         # check for connectedness:
                         output.extend(self._extract_connected_comps(mesh, partition))
@@ -330,8 +342,9 @@ class AgglomerationModel(ABC):
 
         return output
 
-    def bisection_segregated(self, mesh: Mesh, mult_factor: float,
-                             subset: np.ndarray = None) -> ClassList:
+    def bisection_segregated(
+        self, mesh: Mesh, mult_factor: float, subset: np.ndarray = None
+    ) -> ClassList:
         """Bisect heterogeneous mesh until elements are small enough.
 
         Heterogeneous parts of the mesh are bisected separately; the physical
@@ -366,16 +379,19 @@ class AgglomerationModel(ABC):
 
         return self.bisection_mult_factor(mesh, mult_factor, warm_start=connected_parts)
 
-    def multilevel_bisection(self, mesh: Mesh, refiner=None, threshold=200,
-                             nref=7, using_cuda: bool = True):
+    def multilevel_bisection(
+        self, mesh: Mesh, refiner=None, threshold=200, nref=7, using_cuda: bool = True
+    ):
         if using_cuda:
             graph = self._get_graph(mesh)
             return self._multilevel_recursive_bisection(graph, refiner, threshold, nref)
         else:
-            graph = self._get_graph(mesh, device=torch.device('cpu'))
+            graph = self._get_graph(mesh, device=torch.device("cpu"))
             return self._mlrb_light_cuda(graph, refiner, threshold, nref)
 
-    def _multilevel_recursive_bisection(self, og_graph: Data, refiner, threshold=200, nref=7):
+    def _multilevel_recursive_bisection(
+        self, og_graph: Data, refiner, threshold=200, nref=7
+    ):
         """Strict multilevel bisection algorithm"""
         # ind = np.arange(og_graph.num_nodes)
         # coarsen graph down to the desired size
@@ -398,15 +414,27 @@ class AgglomerationModel(ABC):
             one_hot_part = one_hot(bool_mask.to(dtype=int))
             biparted_coarse_graph = Data(x=one_hot_part, edge_index=graph.edge_index)
             # uncoarsen and refine
-            refined_cut = self._uncoarsen_and_refine(biparted_coarse_graph, clusters, edge_indices, refiner)
+            refined_cut = self._uncoarsen_and_refine(
+                biparted_coarse_graph, clusters, edge_indices, refiner
+            )
             refined_bool_mask = refined_cut.x[:, 0].to(dtype=torch.bool)
             # print('finished', nref)
             # recursive call
-            subgraph_0_classes = self._multilevel_recursive_bisection(og_graph.subgraph(refined_bool_mask), refiner, threshold, nref-1)
-            subgraph_1_classes = self._multilevel_recursive_bisection(og_graph.subgraph(~refined_bool_mask), refiner, threshold, nref-1)
+            subgraph_0_classes = self._multilevel_recursive_bisection(
+                og_graph.subgraph(refined_bool_mask), refiner, threshold, nref - 1
+            )
+            subgraph_1_classes = self._multilevel_recursive_bisection(
+                og_graph.subgraph(~refined_bool_mask), refiner, threshold, nref - 1
+            )
             # convert result to indeces and return
-            subgraph_0_classes = [mask_to_index(refined_bool_mask).cpu()[cl].numpy() for cl in subgraph_0_classes]
-            subgraph_1_classes = [mask_to_index(~refined_bool_mask).cpu()[cl].numpy() for cl in subgraph_1_classes]
+            subgraph_0_classes = [
+                mask_to_index(refined_bool_mask).cpu()[cl].numpy()
+                for cl in subgraph_0_classes
+            ]
+            subgraph_1_classes = [
+                mask_to_index(~refined_bool_mask).cpu()[cl].numpy()
+                for cl in subgraph_1_classes
+            ]
             return subgraph_0_classes + subgraph_1_classes
         else:
             # no need to bisect anymore: check for connectedness
@@ -418,8 +446,8 @@ class AgglomerationModel(ABC):
         # ind = np.arange(og_graph.num_nodes)
         # coarsen graph down to the desired size
         # graph = self._get_graph(mesh)
-        assert og_graph.x.device == torch.device('cpu')
-        assert og_graph.edge_index.device == torch.device('cpu')
+        assert og_graph.x.device == torch.device("cpu")
+        assert og_graph.edge_index.device == torch.device("cpu")
         if nref >= 1 and og_graph.num_nodes > 1:
             # graph = og_graph.subgraph(torch.tensor(subset, device=DEVICE))
             clusters, edge_indices = [], []
@@ -436,25 +464,41 @@ class AgglomerationModel(ABC):
             # partition the coarsest graph on CUDA
             graph = graph.to(DEVICE)
             bool_mask = self._bisect_graph(graph)
-            print('bisected: ', nref, '\tCoarse graph size: ', graph.num_nodes)
+            print("bisected: ", nref, "\tCoarse graph size: ", graph.num_nodes)
             one_hot_part = one_hot(bool_mask.to(dtype=int))
-            biparted_coarse_graph = Data(x=one_hot_part, edge_index=graph.edge_index).cpu()
+            biparted_coarse_graph = Data(
+                x=one_hot_part, edge_index=graph.edge_index
+            ).cpu()
             # uncoarsen on CPU and refine on CUDA
-            refined_cut = self._uncoarsen_and_refine(biparted_coarse_graph, clusters, edge_indices, refiner)
+            refined_cut = self._uncoarsen_and_refine(
+                biparted_coarse_graph, clusters, edge_indices, refiner
+            )
             refined_bool_mask = refined_cut.x[:, 0].to(dtype=torch.bool).cpu()
             # print('finished', nref)
             # recursive call
-            subgraph_0_classes = self._mlrb_light_cuda(og_graph.subgraph(refined_bool_mask), refiner, threshold, nref-1)
-            subgraph_1_classes = self._mlrb_light_cuda(og_graph.subgraph(~refined_bool_mask), refiner, threshold, nref-1)
+            subgraph_0_classes = self._mlrb_light_cuda(
+                og_graph.subgraph(refined_bool_mask), refiner, threshold, nref - 1
+            )
+            subgraph_1_classes = self._mlrb_light_cuda(
+                og_graph.subgraph(~refined_bool_mask), refiner, threshold, nref - 1
+            )
             # convert result to indeces and return
-            subgraph_0_classes = [mask_to_index(refined_bool_mask).cpu()[cl].numpy() for cl in subgraph_0_classes]
-            subgraph_1_classes = [mask_to_index(~refined_bool_mask).cpu()[cl].numpy() for cl in subgraph_1_classes]
+            subgraph_0_classes = [
+                mask_to_index(refined_bool_mask).cpu()[cl].numpy()
+                for cl in subgraph_0_classes
+            ]
+            subgraph_1_classes = [
+                mask_to_index(~refined_bool_mask).cpu()[cl].numpy()
+                for cl in subgraph_1_classes
+            ]
             return subgraph_0_classes + subgraph_1_classes
         else:
             # no need to bisect anymore: check for connectedness
             return self._extract_conn_comps(og_graph)
 
-    def _uncoarsen_and_refine(self, biparted_coarse_graph: Data, clusters, edge_indices, refiner, **kwargs):
+    def _uncoarsen_and_refine(
+        self, biparted_coarse_graph: Data, clusters, edge_indices, refiner, **kwargs
+    ):
         while len(clusters) > 0:
             cluster = clusters.pop()
             _, inverse = torch.unique(cluster, sorted=True, return_inverse=True)

@@ -14,8 +14,12 @@ from scipy.spatial import Delaunay, Voronoi
 import meshio
 import gmsh
 
-from magnet.geometric_utils import (tetrahedron_center, tetrahedron_volume,
-                                    shoelace_formula, polygon_centroid)
+from magnet.geometric_utils import (
+    tetrahedron_center,
+    tetrahedron_volume,
+    shoelace_formula,
+    polygon_centroid,
+)
 from magnet._types import adj_ind_type
 
 
@@ -50,12 +54,14 @@ def delaunay_tria(output_path: str, bounds: tuple[int, int] = (10, 400)):
     dimension = 2
     # generate the points of the mesh
     n_points = random.randint(bounds[0], bounds[1])
-    points_coords = np.array([[random.random() for i in range(dimension)] for j in range(n_points)])
+    points_coords = np.array(
+        [[random.random() for i in range(dimension)] for j in range(n_points)]
+    )
     n_edge_elem = int(n_points**0.5)
-    edge1 = np.array([[0, 1/n_edge_elem*i] for i in range(n_edge_elem+1)])
-    edge2 = np.array([[1/n_edge_elem*i, 1] for i in range(1, n_edge_elem+1)])
-    edge3 = np.array([[1, 1/n_edge_elem*i] for i in range(n_edge_elem+1)])
-    edge4 = np.array([[1/n_edge_elem*i, 0] for i in range(1, n_edge_elem+1)])
+    edge1 = np.array([[0, 1 / n_edge_elem * i] for i in range(n_edge_elem + 1)])
+    edge2 = np.array([[1 / n_edge_elem * i, 1] for i in range(1, n_edge_elem + 1)])
+    edge3 = np.array([[1, 1 / n_edge_elem * i] for i in range(n_edge_elem + 1)])
+    edge4 = np.array([[1 / n_edge_elem * i, 0] for i in range(1, n_edge_elem + 1)])
     points_coords = np.concatenate((points_coords, edge1, edge2, edge3, edge4))
 
     # compute Delaunay triangulation
@@ -77,7 +83,7 @@ def delaunay_tria(output_path: str, bounds: tuple[int, int] = (10, 400)):
                 adjacency[i, j] = 1
     adjacency = sparse.csr_matrix(adjacency, dtype=adj_ind_type)
 
-    cells = [('triangle', cells)]
+    cells = [("triangle", cells)]
     _save_mesh(output_path, points_coords, cells)
 
     return adjacency, centroids, areas
@@ -109,36 +115,54 @@ def structured_quads(output_path: str, bounds: tuple[int, int] = (5, 60)):
     # n° of elements in x and y direction:
     n_elem_edges_x = random.randint(bounds[0], bounds[1])
     n_elem_edges_y = random.randint(bounds[0], bounds[1])
-    hx = 1/n_elem_edges_x
-    hy = 1/n_elem_edges_y
-    num_cells = int(n_elem_edges_x*n_elem_edges_y)
+    hx = 1 / n_elem_edges_x
+    hy = 1 / n_elem_edges_y
+    num_cells = int(n_elem_edges_x * n_elem_edges_y)
 
-    areas = np.array([1/num_cells for j in range(num_cells)], dtype=float)
-    centroids = np.array([[hx/2+hx*i, hy/2+hy*j]
-                          for j in range(n_elem_edges_y)
-                          for i in range(n_elem_edges_x)], dtype=float)
+    areas = np.array([1 / num_cells for j in range(num_cells)], dtype=float)
+    centroids = np.array(
+        [
+            [hx / 2 + hx * i, hy / 2 + hy * j]
+            for j in range(n_elem_edges_y)
+            for i in range(n_elem_edges_x)
+        ],
+        dtype=float,
+    )
 
     adjacency = np.zeros((num_cells, num_cells), dtype=adj_ind_type)
     for i in range(num_cells):
-        neighbours = np.array([i-1, i+1, i-n_elem_edges_x, i+n_elem_edges_x])
+        neighbours = np.array([i - 1, i + 1, i - n_elem_edges_x, i + n_elem_edges_x])
         if i % n_elem_edges_x == 0:
             neighbours = np.delete(neighbours, 0)  # remove left neighbour
-        if i % n_elem_edges_x == n_elem_edges_x-1:
+        if i % n_elem_edges_x == n_elem_edges_x - 1:
             neighbours = np.delete(neighbours, 1)  # remove right neighbour
-        adjacency[i, neighbours[np.logical_and(neighbours >= 0, neighbours < num_cells)]] = 1
+        adjacency[
+            i, neighbours[np.logical_and(neighbours >= 0, neighbours < num_cells)]
+        ] = 1
     adjacency = sparse.csr_matrix(adjacency, dtype=adj_ind_type)
 
     # saving the mesh
-    points_coords = np.array([[hx*i, hy*j]
-                              for j in range(n_elem_edges_y+1)
-                              for i in range(n_elem_edges_x+1)])
-    connectivity = np.array([[i+j*(n_elem_edges_x+1),
-                              i+j*(n_elem_edges_x+1)+1,
-                              i+j*(n_elem_edges_x+1)+1+n_elem_edges_x+1,
-                              i+j*(n_elem_edges_x+1)+1+n_elem_edges_x]
-                             for j in range(n_elem_edges_y)
-                             for i in range(n_elem_edges_x)], dtype=int)
-    cells = [('quad', connectivity)]
+    points_coords = np.array(
+        [
+            [hx * i, hy * j]
+            for j in range(n_elem_edges_y + 1)
+            for i in range(n_elem_edges_x + 1)
+        ]
+    )
+    connectivity = np.array(
+        [
+            [
+                i + j * (n_elem_edges_x + 1),
+                i + j * (n_elem_edges_x + 1) + 1,
+                i + j * (n_elem_edges_x + 1) + 1 + n_elem_edges_x + 1,
+                i + j * (n_elem_edges_x + 1) + 1 + n_elem_edges_x,
+            ]
+            for j in range(n_elem_edges_y)
+            for i in range(n_elem_edges_x)
+        ],
+        dtype=int,
+    )
+    cells = [("quad", connectivity)]
     _save_mesh(output_path, points_coords, cells)
 
     return adjacency, centroids, areas
@@ -168,44 +192,68 @@ def structured_tria(output_path: str, bounds: tuple[int, int] = (4, 25)):
         Areas of the cells.
     """
     n_elem_edges = random.randint(bounds[0], bounds[1])
-    h = 1/n_elem_edges
-    num_cells = 2*n_elem_edges**2
+    h = 1 / n_elem_edges
+    num_cells = 2 * n_elem_edges**2
 
-    areas = np.array([1/num_cells for i in range(num_cells)])
+    areas = np.array([1 / num_cells for i in range(num_cells)])
     centroids = np.zeros((num_cells, 2))
     adjacency = np.zeros((num_cells, num_cells), dtype=adj_ind_type)
 
     for i in range(n_elem_edges**2):
         # compute the baricenters of the upper and the lower triangles
-        centroids[2*i] = [h*(1/3+i % n_elem_edges), h*(2/3+i//n_elem_edges)]
-        centroids[2*i+1] = [h*(2/3+i % n_elem_edges), h*(1/3+i//n_elem_edges)]
+        centroids[2 * i] = [
+            h * (1 / 3 + i % n_elem_edges),
+            h * (2 / 3 + i // n_elem_edges),
+        ]
+        centroids[2 * i + 1] = [
+            h * (2 / 3 + i % n_elem_edges),
+            h * (1 / 3 + i // n_elem_edges),
+        ]
 
-        neighbours_U = np.array([2*i-1, 2*i+1, 2*i+2*n_elem_edges+1])
-        neighbours_L = np.array([2*i, 2*i+2, 2*i-2*n_elem_edges])
+        neighbours_U = np.array([2 * i - 1, 2 * i + 1, 2 * i + 2 * n_elem_edges + 1])
+        neighbours_L = np.array([2 * i, 2 * i + 2, 2 * i - 2 * n_elem_edges])
         if i % n_elem_edges == 0:
             neighbours_U = np.delete(neighbours_U, 0)  # remove left neighbour
-        if i % n_elem_edges == n_elem_edges-1:
+        if i % n_elem_edges == n_elem_edges - 1:
             neighbours_L = np.delete(neighbours_L, 1)  # remove right neighbour
-        adjacency[2*i, neighbours_U[np.logical_and(neighbours_U >= 0, neighbours_U < num_cells)]] = 1
-        adjacency[2*i+1, neighbours_L[np.logical_and(neighbours_L >= 0, neighbours_L < num_cells)]] = 1
+        adjacency[
+            2 * i,
+            neighbours_U[np.logical_and(neighbours_U >= 0, neighbours_U < num_cells)],
+        ] = 1
+        adjacency[
+            2 * i + 1,
+            neighbours_L[np.logical_and(neighbours_L >= 0, neighbours_L < num_cells)],
+        ] = 1
     adjacency = sparse.csr_matrix(adjacency, dtype=adj_ind_type)
 
     # saving the mesh
-    points_coords = np.array([[h*i, h*j]
-                              for j in range(n_elem_edges+1)
-                              for i in range(n_elem_edges+1)])
-    connectivity = np.array([triangle_vert_ids
-                             for j in range(n_elem_edges)
-                             for i in range(n_elem_edges)
-                             for triangle_vert_ids in (
-                              [(i+j*(n_elem_edges+1)),
-                               (i+j*(n_elem_edges+1))+(n_elem_edges+1)+1,
-                               (i+j*(n_elem_edges+1))+(n_elem_edges+1)],
-                              [(i+j*(n_elem_edges+1)),
-                               (i+j*(n_elem_edges+1))+1,
-                               (i+j*(n_elem_edges+1))+(n_elem_edges+1)+1]
-                              )])
-    cells = [('triangle', connectivity)]
+    points_coords = np.array(
+        [
+            [h * i, h * j]
+            for j in range(n_elem_edges + 1)
+            for i in range(n_elem_edges + 1)
+        ]
+    )
+    connectivity = np.array(
+        [
+            triangle_vert_ids
+            for j in range(n_elem_edges)
+            for i in range(n_elem_edges)
+            for triangle_vert_ids in (
+                [
+                    (i + j * (n_elem_edges + 1)),
+                    (i + j * (n_elem_edges + 1)) + (n_elem_edges + 1) + 1,
+                    (i + j * (n_elem_edges + 1)) + (n_elem_edges + 1),
+                ],
+                [
+                    (i + j * (n_elem_edges + 1)),
+                    (i + j * (n_elem_edges + 1)) + 1,
+                    (i + j * (n_elem_edges + 1)) + (n_elem_edges + 1) + 1,
+                ],
+            )
+        ]
+    )
+    cells = [("triangle", connectivity)]
     _save_mesh(output_path, points_coords, cells)
 
     return adjacency, centroids, areas
@@ -242,8 +290,9 @@ def voronoi_tess(output_path: str, bounds: tuple[int, int] = (50, 1000)):
     """
     # generate the points of the mesh
     n_points = random.randint(bounds[0], bounds[1])
-    points_coords = np.array([[random.random() for i in range(2)]
-                              for j in range(n_points)])
+    points_coords = np.array(
+        [[random.random() for i in range(2)] for j in range(n_points)]
+    )
 
     # compute Voronoi tesselation
     tesselation = Voronoi(points_coords)
@@ -251,8 +300,9 @@ def voronoi_tess(output_path: str, bounds: tuple[int, int] = (50, 1000)):
     centroids, areas = [], []
     # regions only corresponding to points
     # keys: node index of the corresponding region
-    regions = {i: tesselation.regions[tesselation.point_region[i]]
-               for i in range(n_points)}
+    regions = {
+        i: tesselation.regions[tesselation.point_region[i]] for i in range(n_points)
+    }
     for i in range(len(regions)):
         reg_nodes = regions[i]
         v = tesselation.vertices[reg_nodes]
@@ -263,8 +313,7 @@ def voronoi_tess(output_path: str, bounds: tuple[int, int] = (50, 1000)):
         else:
             # extract in bounds regions
             centroid = polygon_centroid(v)
-            if (centroid[0] < 0 or centroid[0] > 1
-               or centroid[1] < 0 or centroid[1] > 1):
+            if centroid[0] < 0 or centroid[0] > 1 or centroid[1] < 0 or centroid[1] > 1:
                 del regions[i]
             else:
                 new_vertices = new_vertices.union(reg_nodes)
@@ -294,17 +343,19 @@ def voronoi_tess(output_path: str, bounds: tuple[int, int] = (50, 1000)):
     for i in new_nodes:
         new_region = [old_to_new_vert[j] for j in regions[i]]
         new_region = np.array(new_region).reshape((1, -1))
-        polygons.append(('polygon', new_region))
+        polygons.append(("polygon", new_region))
 
     _save_mesh(output_path, vertices, polygons)
 
     return adjacency, centroids, areas
 
 
-def circular_holes(output_path: str,
-                   lc: float | tuple[float, float] = 0.04,
-                   N: int | tuple[int, int] = 10,
-                   r: float = 0.03):
+def circular_holes(
+    output_path: str,
+    lc: float | tuple[float, float] = 0.04,
+    N: int | tuple[int, int] = 10,
+    r: float = 0.03,
+):
     """Create a mesh with circular holes.
 
     Creates a triangular mesh of the unit square  including `N` circular holes
@@ -364,18 +415,27 @@ def circular_holes(output_path: str,
             circles = np.empty(N)
             i, missed_circles = 0, 0
             while i < N:
-                centers[i] = np.array([random.uniform(0+1.1*r, 1-1.1*r),
-                                       random.uniform(0+1.1*r, 1-1.1*r)])
-                if i == 0 or min([np.linalg.norm(centers[i]-centers[j])
-                                  for j in range(0, i)]) > 2.2*r:
+                centers[i] = np.array(
+                    [
+                        random.uniform(0 + 1.1 * r, 1 - 1.1 * r),
+                        random.uniform(0 + 1.1 * r, 1 - 1.1 * r),
+                    ]
+                )
+                if (
+                    i == 0
+                    or min(
+                        [np.linalg.norm(centers[i] - centers[j]) for j in range(0, i)]
+                    )
+                    > 2.2 * r
+                ):
                     circles[i], _ = _gmsh_circle(centers[i], r, lc)
                     i += 1
                 else:
                     missed_circles += 1
-                if missed_circles > N*5:
-                    raise TimeoutError('Failed to fit holes into the mesh.')
+                if missed_circles > N * 5:
+                    raise TimeoutError("Failed to fit holes into the mesh.")
 
-            gmsh.model.geo.addPlaneSurface([square]+list(circles))
+            gmsh.model.geo.addPlaneSurface([square] + list(circles))
             # Generate the mesh
             gmsh.model.geo.synchronize()
             gmsh.model.mesh.generate(2)
@@ -411,8 +471,7 @@ def holed_square(output_path: str, lc: float = 0.15, r: float = 0.25):
     None
     """
     if r >= 1:
-        raise ValueError(
-            'Chosen radius is too big: the hole will not fit.')
+        raise ValueError("Chosen radius is too big: the hole will not fit.")
 
     if not gmsh.is_initialized():
         gmsh.initialize()
@@ -444,10 +503,9 @@ def holed_square(output_path: str, lc: float = 0.15, r: float = 0.25):
     gmsh.finalize()
 
 
-def double_circle(output_path: str,
-                  r: float = 0.6,
-                  center: float = 0.5,
-                  lc: float = 0.05):
+def double_circle(
+    output_path: str, r: float = 0.6, center: float = 0.5, lc: float = 0.05
+):
     """Create a mesh made by 2 intersecting circles.
 
     Creates a triangular mesh comprising 2 circles of radius `r` and with
@@ -469,28 +527,33 @@ def double_circle(output_path: str,
     """
     if r <= center:
         raise ValueError(
-            'Chosen radius is too small: the 2 circles will not intersect.')
+            "Chosen radius is too small: the 2 circles will not intersect."
+        )
 
     if not gmsh.is_initialized():
         gmsh.initialize()
     gmsh.model.add(output_path)
 
     # create the centers and arc points
-    h_intersection = (r**2 - center**2)**0.5
+    h_intersection = (r**2 - center**2) ** 0.5
     c1 = gmsh.model.geo.addPoint(center, 0, 0)
     c2 = gmsh.model.geo.addPoint(-center, 0, 0)
     p_up = gmsh.model.geo.addPoint(0, h_intersection, 0, lc)
     p_down = gmsh.model.geo.addPoint(0, -h_intersection, 0, lc)
-    p_right = gmsh.model.geo.addPoint(center+r, 0, 0, lc)
-    p_left = gmsh.model.geo.addPoint(-center-r, 0, 0, lc)
+    p_right = gmsh.model.geo.addPoint(center + r, 0, 0, lc)
+    p_left = gmsh.model.geo.addPoint(-center - r, 0, 0, lc)
 
     # add circle arcs and their physical groups
-    right_arc = [gmsh.model.geo.addCircleArc(p_up, c1, p_right),
-                 gmsh.model.geo.addCircleArc(p_right, c1, p_down)]
+    right_arc = [
+        gmsh.model.geo.addCircleArc(p_up, c1, p_right),
+        gmsh.model.geo.addCircleArc(p_right, c1, p_down),
+    ]
     gmsh.model.geo.addPhysicalGroup(1, right_arc)
 
-    left_arc = [gmsh.model.geo.addCircleArc(p_down, c2, p_left),
-                gmsh.model.geo.addCircleArc(p_left, c2, p_up)]
+    left_arc = [
+        gmsh.model.geo.addCircleArc(p_down, c2, p_left),
+        gmsh.model.geo.addCircleArc(p_left, c2, p_up),
+    ]
     gmsh.model.geo.addPhysicalGroup(1, left_arc)
 
     # add outer loop and surface
@@ -504,10 +567,9 @@ def double_circle(output_path: str,
     gmsh.finalize()
 
 
-def circular_inclusions(output_path: str,
-                        lc: float | tuple = 0.15,
-                        N: int | tuple = 25,
-                        r: float = 0.015):
+def circular_inclusions(
+    output_path: str, lc: float | tuple = 0.15, N: int | tuple = 25, r: float = 0.015
+):
     """Create a mesh with circular inclusions.
 
     Creates a triangular mesh of the unit square  including `N` circular
@@ -571,19 +633,28 @@ def circular_inclusions(output_path: str,
             inclusions = np.empty(N)
             i, missed_circles = 0, 0
             while i < N:
-                centers[i] = np.array([random.uniform(0+1.1*r, 1-1.1*r),
-                                       random.uniform(0+1.1*r, 1-1.1*r)])
-                if i == 0 or min([np.linalg.norm(centers[i]-centers[j])
-                                  for j in range(0, i)]) > 2.2*r:
+                centers[i] = np.array(
+                    [
+                        random.uniform(0 + 1.1 * r, 1 - 1.1 * r),
+                        random.uniform(0 + 1.1 * r, 1 - 1.1 * r),
+                    ]
+                )
+                if (
+                    i == 0
+                    or min(
+                        [np.linalg.norm(centers[i] - centers[j]) for j in range(0, i)]
+                    )
+                    > 2.2 * r
+                ):
                     circles[i], _ = _gmsh_circle(centers[i], r, lc)
                     inclusions[i] = gmsh.model.geo.addPlaneSurface([circles[i]])
                     i += 1
                 else:
                     missed_circles += 1
-                if missed_circles > N*5:
-                    raise TimeoutError('Failed to fit holes into the mesh.')
+                if missed_circles > N * 5:
+                    raise TimeoutError("Failed to fit holes into the mesh.")
 
-            area = gmsh.model.geo.addPlaneSurface([square]+list(circles))
+            area = gmsh.model.geo.addPlaneSurface([square] + list(circles))
             gmsh.model.geo.addPhysicalGroup(2, [area], 0)
             gmsh.model.geo.addPhysicalGroup(2, inclusions, 1)
             # Generate the mesh
@@ -591,7 +662,7 @@ def circular_inclusions(output_path: str,
             gmsh.model.mesh.generate(2)
             break
         except Exception:
-            print('Exception occurred, restarting generation process.')
+            print("Exception occurred, restarting generation process.")
             gmsh.finalize()
 
     Adjacency, Baricenters, Areas = _get_gmsh_2D_graph_data()
@@ -636,11 +707,16 @@ def heterogeneous_square(output_path: str, lc: tuple[float, float] = (0.07, 0.47
 
     lc = random.uniform(lc[0], lc[1])
     # Generate unit square
-    vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
-                (random.random(), 0, 0), (random.random(), 1, 0)]
+    vertices = [
+        (0, 0, 0),
+        (1, 0, 0),
+        (1, 1, 0),
+        (0, 1, 0),
+        (random.random(), 0, 0),
+        (random.random(), 1, 0),
+    ]
     points = [gmsh.model.geo.addPoint(x, y, z, lc) for x, y, z in vertices]
-    lines = [(0, 4), (4, 5), (5, 3), (3, 0),
-             (4, 1), (1, 2), (2, 5)]
+    lines = [(0, 4), (4, 5), (5, 3), (3, 0), (4, 1), (1, 2), (2, 5)]
     lines = [gmsh.model.geo.addLine(points[i], points[j]) for i, j in lines]
     curve_loops = [(1, 2, 3, 4), (5, 6, 7, -2)]
     left = gmsh.model.geo.addCurveLoop(curve_loops[0])
@@ -662,15 +738,16 @@ def heterogeneous_square(output_path: str, lc: tuple[float, float] = (0.07, 0.47
     return Adjacency, Baricenters, Areas, Physical_groups
 
 
-def dataset_2D(composition: dict[str: int],
-               output_path: str,
-               dataset_name: str,
-               bounds: tuple[int, int],
-               custom_kwargs: dict[str, dict] = None,
-               extension: str = 'vtk',
-               base_name: str = 'mesh',
-               seed: int = None
-               ) -> None:
+def dataset_2D(
+    composition: dict[str:int],
+    output_path: str,
+    dataset_name: str,
+    bounds: tuple[int, int],
+    custom_kwargs: dict[str, dict] = None,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+    seed: int = None,
+) -> None:
     """Generate dataset of 2D meshes.
 
     Generates dataset of 2D meshes of the unit cube and portions
@@ -702,28 +779,45 @@ def dataset_2D(composition: dict[str: int],
     load_dataset : load mesh dataset.
     """
 
-    dataset_folder = output_path+'/'+dataset_name
+    dataset_folder = output_path + "/" + dataset_name
     if not os.path.isdir(dataset_folder):
         os.mkdir(dataset_folder)
     seed = _setup_rng(seed)
     dataset_size = sum(composition.values())
 
     # initialize log file content
-    content = ('Dataset name:\t'+dataset_name+'\n'
-               + 'Seed:\t'+str(seed)+'\n'
-               + 'Total number of meshes:\t'+str(dataset_size))
-    corr = {'structured_quads': structured_quads,
-            'structured_tria': structured_tria,
-            'delaunay_tria': delaunay_tria,
-            'voronoi_tess': voronoi_tess,
-            'circular_holes': circular_holes
-            }
-    custom_kwargs = {'structured_quads': {'bounds': (int(bounds[0]**(0.5)), int(bounds[1]**(0.5)))},
-                     'structured_tria': {'bounds': (int((bounds[0]/2)**(0.5)), int((bounds[1]/2)**(0.5)))},
-                     'delaunay_tria': {'bounds': (bounds[0]//2, bounds[1]//2)},
-                     'voronoi_tess': {'bounds': (bounds[0], bounds[1])},
-                     'circular_holes': {'lc': (bounds[1]**(-0.5), bounds[0]**(-0.5)), 'N': (6, 12), 'r': 0.05}
-                     }
+    content = (
+        "Dataset name:\t"
+        + dataset_name
+        + "\n"
+        + "Seed:\t"
+        + str(seed)
+        + "\n"
+        + "Total number of meshes:\t"
+        + str(dataset_size)
+    )
+    corr = {
+        "structured_quads": structured_quads,
+        "structured_tria": structured_tria,
+        "delaunay_tria": delaunay_tria,
+        "voronoi_tess": voronoi_tess,
+        "circular_holes": circular_holes,
+    }
+    custom_kwargs = {
+        "structured_quads": {
+            "bounds": (int(bounds[0] ** (0.5)), int(bounds[1] ** (0.5)))
+        },
+        "structured_tria": {
+            "bounds": (int((bounds[0] / 2) ** (0.5)), int((bounds[1] / 2) ** (0.5)))
+        },
+        "delaunay_tria": {"bounds": (bounds[0] // 2, bounds[1] // 2)},
+        "voronoi_tess": {"bounds": (bounds[0], bounds[1])},
+        "circular_holes": {
+            "lc": (bounds[1] ** (-0.5), bounds[0] ** (-0.5)),
+            "N": (6, 12),
+            "r": 0.05,
+        },
+    }
 
     adjacencies, coords, areas = {}, {}, {}
     base = 0
@@ -733,35 +827,43 @@ def dataset_2D(composition: dict[str: int],
         n_cells = []
         for index in range(base, base + n_meshes):
             adjacencies[index], coords[index], areas[index] = generator(
-                dataset_folder+'/'+base_name+str(index)+'.'+extension,
-                **custom_kwargs[mesh_type])
+                dataset_folder + "/" + base_name + str(index) + "." + extension,
+                **custom_kwargs[mesh_type],
+            )
             n_cells.append(areas[index].shape[0])
-            print(f'Progress:\t {(index/dataset_size*100):.2f} %', end="\r", flush=True)
+            print(f"Progress:\t {(index/dataset_size*100):.2f} %", end="\r", flush=True)
             # update log file
-        content += (f'\n\n- {n_meshes} mesh -> {mesh_type} \t [from mesh {base} to mesh {base+n_meshes}]\n'
-                    f'minimum number of cells:\t{min(n_cells)}\t\tmaximum:\t{max(n_cells)}')
+        content += (
+            f"\n\n- {n_meshes} mesh -> {mesh_type} \t [from mesh {base} to mesh {base+n_meshes}]\n"
+            f"minimum number of cells:\t{min(n_cells)}\t\tmaximum:\t{max(n_cells)}"
+        )
         base += n_meshes
 
     # save .npz file
-    print('Saving...')
-    np.savez(dataset_folder+'/'+dataset_name,
-             adjacency=adjacencies, coords=coords, volumes=areas)
+    print("Saving...")
+    np.savez(
+        dataset_folder + "/" + dataset_name,
+        adjacency=adjacencies,
+        coords=coords,
+        volumes=areas,
+    )
 
     # save log file
-    with open(dataset_folder+'/'+dataset_name+'_details.txt', 'w') as f:
+    with open(dataset_folder + "/" + dataset_name + "_details.txt", "w") as f:
         f.write(content)
         f.close()
 
 
-def dataset_2D_hetero(composition: dict[str: int],
-                      output_path: str,
-                      dataset_name: str,
-                      bounds: tuple[int, int],
-                      additional_kwargs: dict[str, dict] = None,
-                      extension: str = 'vtk',
-                      base_name: str = 'mesh',
-                      seed: int = None
-                      ) -> None:
+def dataset_2D_hetero(
+    composition: dict[str:int],
+    output_path: str,
+    dataset_name: str,
+    bounds: tuple[int, int],
+    additional_kwargs: dict[str, dict] = None,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+    seed: int = None,
+) -> None:
     """Generate dataset of 2D meshes.
 
     Generates dataset of 2D meshes of the unit cube and portions
@@ -793,25 +895,35 @@ def dataset_2D_hetero(composition: dict[str: int],
     load_dataset : load mesh dataset.
     """
 
-    dataset_folder = output_path+'/'+dataset_name
+    dataset_folder = output_path + "/" + dataset_name
     if not os.path.isdir(dataset_folder):
         os.mkdir(dataset_folder)
     seed = _setup_rng(seed)
     dataset_size = sum(composition.values())
 
     # initialize log file content
-    content = ('Dataset name:\t'+dataset_name+'\n'
-               + 'Seed:\t'+str(seed)+'\n'
-               + 'Total number of meshes:\t'+str(dataset_size))
-    corr = {'circular_inclusions': circular_inclusions,
-            'heterogeneous_square': heterogeneous_square
-            }
+    content = (
+        "Dataset name:\t"
+        + dataset_name
+        + "\n"
+        + "Seed:\t"
+        + str(seed)
+        + "\n"
+        + "Total number of meshes:\t"
+        + str(dataset_size)
+    )
+    corr = {
+        "circular_inclusions": circular_inclusions,
+        "heterogeneous_square": heterogeneous_square,
+    }
     custom_kwargs = {
-        'circular_inclusions': {'lc': (bounds[1]**(-0.5), bounds[0]**(-0.5)),
-                                'N': (6, 12),
-                                'r': 0.05},
-        'heterogeneous_square': {'lc': (bounds[1]**(-0.5), bounds[0]**(-0.5))}
-                     }
+        "circular_inclusions": {
+            "lc": (bounds[1] ** (-0.5), bounds[0] ** (-0.5)),
+            "N": (6, 12),
+            "r": 0.05,
+        },
+        "heterogeneous_square": {"lc": (bounds[1] ** (-0.5), bounds[0] ** (-0.5))},
+    }
     for mesh_type, keywords in additional_kwargs.items():
         for key, value in keywords.items():
             custom_kwargs[mesh_type][key] = value
@@ -823,24 +935,46 @@ def dataset_2D_hetero(composition: dict[str: int],
         generator = corr[mesh_type]
         n_cells = []
         for index in range(base, base + n_meshes):
-            adjacencies[index], coords[index], areas[index], phys_groups[index] = generator(
-                dataset_folder+'/'+base_name+str(index)+'.'+extension,
-                **custom_kwargs[mesh_type])
+            adjacencies[index], coords[index], areas[index], phys_groups[index] = (
+                generator(
+                    dataset_folder + "/" + base_name + str(index) + "." + extension,
+                    **custom_kwargs[mesh_type],
+                )
+            )
             n_cells.append(areas[index].shape[0])
-            print('Progress:\t'+str(round(index/dataset_size*100))+' %', end="\r")
+            print(
+                "Progress:\t" + str(round(index / dataset_size * 100)) + " %", end="\r"
+            )
             # update log file
-        content += ('\n\n-'+str(n_meshes)+' mesh -> '+mesh_type+' \t [from mesh '+str(base)+' to mesh '+str(base+n_meshes)+']\n'
-                    + 'minimum number of cells:\t'+str(min(n_cells))+'\t\tmaximum:\t'+str(max(n_cells)))
+        content += (
+            "\n\n-"
+            + str(n_meshes)
+            + " mesh -> "
+            + mesh_type
+            + " \t [from mesh "
+            + str(base)
+            + " to mesh "
+            + str(base + n_meshes)
+            + "]\n"
+            + "minimum number of cells:\t"
+            + str(min(n_cells))
+            + "\t\tmaximum:\t"
+            + str(max(n_cells))
+        )
         base += n_meshes
 
     # save .npz file
-    print('Saving...')
-    np.savez(dataset_folder+'/'+dataset_name,
-             adjacency=adjacencies, coords=coords, volumes=areas,
-             physical_groups=phys_groups)
+    print("Saving...")
+    np.savez(
+        dataset_folder + "/" + dataset_name,
+        adjacency=adjacencies,
+        coords=coords,
+        volumes=areas,
+        physical_groups=phys_groups,
+    )
 
     # save log file
-    with open(dataset_folder+'/'+dataset_name+'_details.txt', 'w') as f:
+    with open(dataset_folder + "/" + dataset_name + "_details.txt", "w") as f:
         f.write(content)
         f.close()
 
@@ -856,11 +990,15 @@ def _setup_rng(seed: int | None = None):
     return seed
 
 
-def _save_mesh(output_path: str, points_coords: np.ndarray, cells: list[tuple[str, np.ndarray]]) -> None:
+def _save_mesh(
+    output_path: str, points_coords: np.ndarray, cells: list[tuple[str, np.ndarray]]
+) -> None:
     """Save mesh to file using `meshio`."""
     # Add third coordinate = 0 if vtk format.
-    if output_path.endswith('vtk'):
-        points_coords = np.pad(points_coords, ((0, 0), (0, 1)), 'constant', constant_values=0)
+    if output_path.endswith("vtk"):
+        points_coords = np.pad(
+            points_coords, ((0, 0), (0, 1)), "constant", constant_values=0
+        )
     mesh = meshio.Mesh(points_coords, cells)
     meshio.write(output_path, mesh)
 
@@ -875,7 +1013,7 @@ def generate_cube(output_path: str, bounds: tuple[float, float] = (0.05, 0.20)):
     ----------
     output_path : str
         File path where the mesh will be saved.
-    bounds : tuple[float, float], optional 
+    bounds : tuple[float, float], optional
         Bounds of the uniform distribution from which the mesh size parameter
         is sampled. The smaller this parameter, the smaller the elements of
         the mesh will be (default is (0.05, 0.20)).
@@ -898,15 +1036,40 @@ def generate_cube(output_path: str, bounds: tuple[float, float] = (0.05, 0.20)):
     lc1 = random.uniform(bounds[0], bounds[1])
 
     # Define the coordinates of the vertices
-    vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
-                (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]
+    vertices = [
+        (0, 0, 0),
+        (1, 0, 0),
+        (1, 1, 0),
+        (0, 1, 0),
+        (0, 0, 1),
+        (1, 0, 1),
+        (1, 1, 1),
+        (0, 1, 1),
+    ]
     # Define the lines
-    lines = [(0, 1), (1, 2), (2, 3), (3, 0),
-             (4, 5), (5, 6), (6, 7), (7, 4),
-             (0, 4), (1, 5), (2, 6), (3, 7)]
+    lines = [
+        (0, 1),
+        (1, 2),
+        (2, 3),
+        (3, 0),
+        (4, 5),
+        (5, 6),
+        (6, 7),
+        (7, 4),
+        (0, 4),
+        (1, 5),
+        (2, 6),
+        (3, 7),
+    ]
     # add surfaces
-    surfaces = [(0, 1, 2, 3),       (4, 5, 6, 7),       (0, 9, -4, -8),
-                (1, 10, -5, -9),    (2, 11, -6, -10),   (3, 8, -7, -11)]
+    surfaces = [
+        (0, 1, 2, 3),
+        (4, 5, 6, 7),
+        (0, 9, -4, -8),
+        (1, 10, -5, -9),
+        (2, 11, -6, -10),
+        (3, 8, -7, -11),
+    ]
     volumes = [(0, 1, 2, 3, 4, 5)]
     _assemble_gmsh_mesh(lc1, vertices, lines, surfaces, volumes)
 
@@ -968,22 +1131,73 @@ def generate_cube_portion(output_path: str, bounds: tuple[float, float] = (0.03,
 
             # Create the portion of the cube by selecting randomly the
             # vertices in the 8 sectors of the unit cube.
-            vertices = [(random.uniform(0, 0.5), random.uniform(0, 0.5), random.uniform(0, 0.5)),
-                        (random.uniform(0.5, 1), random.uniform(0, 0.5), random.uniform(0, 0.5)),
-                        (random.uniform(0.5, 1), random.uniform(0.5, 1), random.uniform(0, 0.5)),
-                        (random.uniform(0, 0.5), random.uniform(0.5, 1), random.uniform(0, 0.5)),
-                        (random.uniform(0, 0.5), random.uniform(0, 0.5), random.uniform(0.5, 1)),
-                        (random.uniform(0.5, 1), random.uniform(0, 0.5), random.uniform(0.5, 1)),
-                        (random.uniform(0.5, 1), random.uniform(0.5, 1), random.uniform(0.5, 1)),
-                        (random.uniform(0, 0.5), random.uniform(0.5, 1), random.uniform(0.5, 1))]
+            vertices = [
+                (
+                    random.uniform(0, 0.5),
+                    random.uniform(0, 0.5),
+                    random.uniform(0, 0.5),
+                ),
+                (
+                    random.uniform(0.5, 1),
+                    random.uniform(0, 0.5),
+                    random.uniform(0, 0.5),
+                ),
+                (
+                    random.uniform(0.5, 1),
+                    random.uniform(0.5, 1),
+                    random.uniform(0, 0.5),
+                ),
+                (
+                    random.uniform(0, 0.5),
+                    random.uniform(0.5, 1),
+                    random.uniform(0, 0.5),
+                ),
+                (
+                    random.uniform(0, 0.5),
+                    random.uniform(0, 0.5),
+                    random.uniform(0.5, 1),
+                ),
+                (
+                    random.uniform(0.5, 1),
+                    random.uniform(0, 0.5),
+                    random.uniform(0.5, 1),
+                ),
+                (
+                    random.uniform(0.5, 1),
+                    random.uniform(0.5, 1),
+                    random.uniform(0.5, 1),
+                ),
+                (
+                    random.uniform(0, 0.5),
+                    random.uniform(0.5, 1),
+                    random.uniform(0.5, 1),
+                ),
+            ]
 
             # Define the lines
-            lines = [(0, 1), (1, 2), (2, 3), (3, 0),
-                     (4, 5), (5, 6), (6, 7), (7, 4),
-                     (0, 4), (1, 5), (2, 6), (3, 7)]
+            lines = [
+                (0, 1),
+                (1, 2),
+                (2, 3),
+                (3, 0),
+                (4, 5),
+                (5, 6),
+                (6, 7),
+                (7, 4),
+                (0, 4),
+                (1, 5),
+                (2, 6),
+                (3, 7),
+            ]
             # add surfaces
-            surfaces = [(0, 1, 2, 3), (4, 5, 6, 7), (0, 9, -4, -8),
-                        (1, 10, -5, -9), (2, 11, -6, -10), (3, 8, -7, -11)]
+            surfaces = [
+                (0, 1, 2, 3),
+                (4, 5, 6, 7),
+                (0, 9, -4, -8),
+                (1, 10, -5, -9),
+                (2, 11, -6, -10),
+                (3, 8, -7, -11),
+            ]
             volumes = [(0, 1, 2, 3, 4, 5)]
             _assemble_gmsh_mesh(lc1, vertices, lines, surfaces, volumes)
 
@@ -1006,13 +1220,15 @@ def generate_cube_portion(output_path: str, bounds: tuple[float, float] = (0.03,
     return Adjacency, Coords, Volumes
 
 
-def dataset_3D(n_cubes: int,
-                        n_cubes_portions: int,
-                        output_path: str,
-                        dataset_name: str,
-                        extension: str = 'vtk',
-                        base_name: str = 'mesh',
-                        seed: int = None) -> None:
+def dataset_3D(
+    n_cubes: int,
+    n_cubes_portions: int,
+    output_path: str,
+    dataset_name: str,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+    seed: int = None,
+) -> None:
     """Generate dataset of 3D meshes.
 
     Generates dataset of 3D tetrahedral meshes of the unit cube and portions
@@ -1046,7 +1262,7 @@ def dataset_3D(n_cubes: int,
     --------
     magnet.io.load_dataset : load mesh dataset.
     """
-    dataset_folder = output_path+'/'+dataset_name
+    dataset_folder = output_path + "/" + dataset_name
     if not os.path.isdir(dataset_folder):
         os.mkdir(dataset_folder)
 
@@ -1062,55 +1278,99 @@ def dataset_3D(n_cubes: int,
     for index in range(n_cubes):
         start = time.time()
 
-        Adj, Coor, Vol = generate_cube(dataset_folder+'/'+base_name+str(index)+'.'+extension)
+        Adj, Coor, Vol = generate_cube(
+            dataset_folder + "/" + base_name + str(index) + "." + extension
+        )
         adjacencies[index] = Adj
         coords[index] = Coor
         volumes[index] = Vol
         num_cells_cubes[index] = Vol.shape[0]
 
-        print('Mesh:', index,
-              '\t\tNumber of cells:', Vol.shape[0],
-              '\t\tElapsed time:', round(time.time()-start, 2), 's')
+        print(
+            "Mesh:",
+            index,
+            "\t\tNumber of cells:",
+            Vol.shape[0],
+            "\t\tElapsed time:",
+            round(time.time() - start, 2),
+            "s",
+        )
 
-    for index in range(n_cubes, n_cubes+n_cubes_portions):
+    for index in range(n_cubes, n_cubes + n_cubes_portions):
         start = time.time()
 
-        Adj, Coor, Vol = generate_cube_portion(dataset_folder+'/'+base_name+str(index)+'.'+extension)
+        Adj, Coor, Vol = generate_cube_portion(
+            dataset_folder + "/" + base_name + str(index) + "." + extension
+        )
         adjacencies[index] = Adj
         coords[index] = Coor
         volumes[index] = Vol
-        num_cells_portions[index-n_cubes] = Vol.shape[0]
+        num_cells_portions[index - n_cubes] = Vol.shape[0]
 
-        print('Mesh:', index,
-              '\t\tNumber of cells:', Vol.shape[0],
-              '\t\tElapsed time:', round(time.time()-start, 2), 's')
+        print(
+            "Mesh:",
+            index,
+            "\t\tNumber of cells:",
+            Vol.shape[0],
+            "\t\tElapsed time:",
+            round(time.time() - start, 2),
+            "s",
+        )
 
     if gmsh.is_initialized():
         gmsh.finalize()
 
     # save .npz file
-    print('Saving...')
-    np.savez(dataset_folder+'/'+dataset_name, adjacency=adjacencies,
-             coords=coords, volumes=volumes)
+    print("Saving...")
+    np.savez(
+        dataset_folder + "/" + dataset_name,
+        adjacency=adjacencies,
+        coords=coords,
+        volumes=volumes,
+    )
 
     # save log file
-    content = ('Dataset name:\t'+dataset_name+'\n'
-               + 'Seed:\t'+str(seed)+'\n'
-               + 'Total number of meshes:\t'+str(n_cubes+n_cubes_portions)+'\n\n'
+    content = (
+        "Dataset name:\t"
+        + dataset_name
+        + "\n"
+        + "Seed:\t"
+        + str(seed)
+        + "\n"
+        + "Total number of meshes:\t"
+        + str(n_cubes + n_cubes_portions)
+        + "\n\n"
+        + "-"
+        + str(n_cubes)
+        + " mesh -> unit cubes  [from mesh 0 to mesh "
+        + str(n_cubes - 1)
+        + "]\n"
+        + "minimum number of tetrahedra:\t"
+        + str(min(num_cells_cubes))
+        + "\t\tmaximum:\t"
+        + str(max(num_cells_cubes))
+        + "\n\n"
+        + "-"
+        + str(n_cubes_portions)
+        + " mesh -> portions of the unit cube  [from mesh "
+        + str(n_cubes)
+        + " to mesh "
+        + str(n_cubes + n_cubes_portions - 1)
+        + "]\n"
+        + "minimum number of tetrahedra:\t"
+        + str(min(num_cells_portions))
+        + "\t\tmaximum:\t"
+        + str(max(num_cells_portions))
+    )
 
-               + '-'+str(n_cubes)+' mesh -> unit cubes  [from mesh 0 to mesh '+str(n_cubes-1)+']\n'
-               + 'minimum number of tetrahedra:\t'+str(min(num_cells_cubes))+'\t\tmaximum:\t'+str(max(num_cells_cubes))+'\n\n'
-
-               + '-'+str(n_cubes_portions)+' mesh -> portions of the unit cube  [from mesh '+str(n_cubes)+' to mesh '+str(n_cubes+n_cubes_portions-1)+']\n'
-               + 'minimum number of tetrahedra:\t'+str(min(num_cells_portions))+'\t\tmaximum:\t'+str(max(num_cells_portions))
-               )
-
-    with open(output_path+'/'+dataset_name+'_details.txt', 'w') as f:
+    with open(output_path + "/" + dataset_name + "_details.txt", "w") as f:
         f.write(content)
         f.close()
 
 
-def generate_Heterogeneous_cube(output_path: str, N_parts: int, bounds: tuple[float, float] = (0.07, 0.47)):
+def generate_Heterogeneous_cube(
+    output_path: str, N_parts: int, bounds: tuple[float, float] = (0.07, 0.47)
+):
     """Generate a heterogeneous mesh of the unit cube.
 
     Generates a tetrahedral mesh of the unit cube divided into `N_parts`
@@ -1154,30 +1414,44 @@ def generate_Heterogeneous_cube(output_path: str, N_parts: int, bounds: tuple[fl
     lc1 = random.uniform(bounds[0], bounds[1])
 
     # vertices of the model
-    interface = [sorted([random.uniform(0, 1) for i in range(N_parts-1)]) for j in range(4)]
+    interface = [
+        sorted([random.uniform(0, 1) for i in range(N_parts - 1)]) for j in range(4)
+    ]
     vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]  # first face
-    for n in range(N_parts-1):
-        vertices += [(0, 0, interface[0][n]),    (1, 0, interface[1][n]),    (1, 1, interface[2][n]),    (0, 1, interface[3][n])] # interfaces in the middle
+    for n in range(N_parts - 1):
+        vertices += [
+            (0, 0, interface[0][n]),
+            (1, 0, interface[1][n]),
+            (1, 1, interface[2][n]),
+            (0, 1, interface[3][n]),
+        ]  # interfaces in the middle
     vertices += [(0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]  # last face
 
     # define lines
     lines = []
     for j in range(N_parts):
-        lines += [(4*j+i, 4*j+(i+1) % 4) for i in range(4)]  # interface loop
-        lines += [(4*j+i, 4*j+i+4) for i in range(4)]  # edges connecting 2 interfaces
-    lines += [(4*(N_parts) + i, 4*(N_parts) + (i+1) % 4) for i in range(4)]  # last face
+        lines += [(4 * j + i, 4 * j + (i + 1) % 4) for i in range(4)]  # interface loop
+        lines += [
+            (4 * j + i, 4 * j + i + 4) for i in range(4)
+        ]  # edges connecting 2 interfaces
+    lines += [
+        (4 * (N_parts) + i, 4 * (N_parts) + (i + 1) % 4) for i in range(4)
+    ]  # last face
 
     # define surface loops
     surfaces = []
     for j in range(N_parts):
-        b = 8*j  # reference edge
-        surfaces.append((b, b+1, b+2, b+3))
-        surfaces += [(b+i, b+i+5-4*(i//3), -(b+i+8), -(b+i+4)) for i in range(4)]
-    b = 8*N_parts
-    surfaces.append((b, b+1, b+2, b+3))
+        b = 8 * j  # reference edge
+        surfaces.append((b, b + 1, b + 2, b + 3))
+        surfaces += [
+            (b + i, b + i + 5 - 4 * (i // 3), -(b + i + 8), -(b + i + 4))
+            for i in range(4)
+        ]
+    b = 8 * N_parts
+    surfaces.append((b, b + 1, b + 2, b + 3))
 
     # define the volumes
-    volumes = [(v, v+1, v+2, v+3, v+4, v+5) for v in range(0, N_parts*5, 5)]
+    volumes = [(v, v + 1, v + 2, v + 3, v + 4, v + 5) for v in range(0, N_parts * 5, 5)]
 
     volume_tags = _assemble_gmsh_mesh(lc1, vertices, lines, surfaces, volumes)
 
@@ -1203,12 +1477,14 @@ def generate_Heterogeneous_cube(output_path: str, N_parts: int, bounds: tuple[fl
     return Adjacency, Coords, Volumes, Physical_groups
 
 
-def generate_dataset_heterogeneous(n_cubes: dict[int:int],
-                                   output_path: str,
-                                   dataset_name: str,
-                                   extension: str = 'vtk',
-                                   base_name: str = 'mesh',
-                                   seed: int = None) -> None:
+def generate_dataset_heterogeneous(
+    n_cubes: dict[int:int],
+    output_path: str,
+    dataset_name: str,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+    seed: int = None,
+) -> None:
     """Generate dataset of 3D heterogeneous meshes.
 
     Generates dataset of 3D tetrahedral meshes of the unit cube divided into
@@ -1240,7 +1516,7 @@ def generate_dataset_heterogeneous(n_cubes: dict[int:int],
     load_dataset : load mesh dataset.
     generate_Heterogeneous_cube : heterogeneous mesh of the unit cube.
     """
-    dataset_folder = output_path+'/'+dataset_name
+    dataset_folder = output_path + "/" + dataset_name
     if not os.path.isdir(dataset_folder):
         os.mkdir(dataset_folder)
 
@@ -1257,48 +1533,83 @@ def generate_dataset_heterogeneous(n_cubes: dict[int:int],
 
     base_index = 0
     for n_parts, n_meshes in n_cubes.items():
-        for i in range(base_index, base_index+n_meshes): 
+        for i in range(base_index, base_index + n_meshes):
             start = time.time()
 
-            adjacencies[i], coords[i], volumes[i], physical_groups[i] = generate_Heterogeneous_cube(dataset_folder+'/'+base_name+str(i)+'.'+extension, n_parts)
+            adjacencies[i], coords[i], volumes[i], physical_groups[i] = (
+                generate_Heterogeneous_cube(
+                    dataset_folder + "/" + base_name + str(i) + "." + extension, n_parts
+                )
+            )
 
             num_cells[i] = volumes[i].shape[0]
 
-            print('Mesh:', i,
-                  '\t\tNumber of cells:', num_cells[i],
-                  '\t\tElapsed time:', round(time.time()-start, 2),'s')
+            print(
+                "Mesh:",
+                i,
+                "\t\tNumber of cells:",
+                num_cells[i],
+                "\t\tElapsed time:",
+                round(time.time() - start, 2),
+                "s",
+            )
         base_index += n_meshes
 
     if gmsh.is_initialized():
         gmsh.finalize()
 
-    print('Saving...')
-    np.savez(dataset_folder+'/'+dataset_name, adjacency=adjacencies,
-             coords=coords, volumes=volumes, physical_groups=physical_groups)
+    print("Saving...")
+    np.savez(
+        dataset_folder + "/" + dataset_name,
+        adjacency=adjacencies,
+        coords=coords,
+        volumes=volumes,
+        physical_groups=physical_groups,
+    )
 
     # save log file with dataset details
-    content = ('Dataset name:\t'+dataset_name+'\n'
-               + 'Seed:\t'+str(seed)+'\n'
-               + 'Total number of meshes:\t'+str(dataset_size)+'\n\n'
-
-               + 'minimum number of tetrahedra:\t'+str(min(num_cells))+'\t\tmaximum:\t'+str(max(num_cells))+'\n\n'
-               )
+    content = (
+        "Dataset name:\t"
+        + dataset_name
+        + "\n"
+        + "Seed:\t"
+        + str(seed)
+        + "\n"
+        + "Total number of meshes:\t"
+        + str(dataset_size)
+        + "\n\n"
+        + "minimum number of tetrahedra:\t"
+        + str(min(num_cells))
+        + "\t\tmaximum:\t"
+        + str(max(num_cells))
+        + "\n\n"
+    )
     base_index = 0
     for n_parts, n_meshes in n_cubes.items():
-        content += '-'+str(n_meshes)+' mesh -> '+str(n_parts)+' portion  [from mesh '+str(base_index)+' to mesh '+str(base_index+n_meshes-1)+']\n'
+        content += (
+            "-"
+            + str(n_meshes)
+            + " mesh -> "
+            + str(n_parts)
+            + " portion  [from mesh "
+            + str(base_index)
+            + " to mesh "
+            + str(base_index + n_meshes - 1)
+            + "]\n"
+        )
         base_index += n_meshes
 
-    with open(dataset_folder+'/'+dataset_name+'_details.txt', 'w') as f:
+    with open(dataset_folder + "/" + dataset_name + "_details.txt", "w") as f:
         f.write(content)
         f.close()
 
 
 def mixed_tets_hexa(output_path: str, lc: float = 0.05):
     """Generate a mixed mesh of tetrahedra and hexahedra.
-    
+
     Generates a mesh of the unit cube, half of tetrahedra and half of
     hexahedra, with pyramids for the transition between the two.
-    
+
     Parameters
     ----------
 
@@ -1308,17 +1619,55 @@ def mixed_tets_hexa(output_path: str, lc: float = 0.05):
     gmsh.model.add(output_path)
 
     # unit cube divided in two halves, lower and upper
-    vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
-                (0, 0, 0.5), (1, 0, 0.5), (1, 1, 0.5), (0, 1, 0.5),
-                (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]
-    lines = [(0, 1), (1, 2), (2, 3), (3, 0),
-             (0, 4), (1, 5), (2, 6), (3, 7),
-             (4, 5), (5, 6), (6, 7), (7, 4),
-             (4, 8), (5, 9), (6, 10), (7, 11),
-             (8, 9), (9, 10), (10, 11), (11, 8)]
-    surfaces = [(0, 1, 2, 3), (0, 5, -8, -4), (1, 6, -9, -5), (2, 7, -10, -6),
-                (3, 4, -11, -7), (8, 9, 10, 11), (8, 13, -16, -12), (9, 14, -17, -13),
-                (10, 15, -18, -14), (11, 12, -19, -15), (16, 17, 18, 19)]
+    vertices = [
+        (0, 0, 0),
+        (1, 0, 0),
+        (1, 1, 0),
+        (0, 1, 0),
+        (0, 0, 0.5),
+        (1, 0, 0.5),
+        (1, 1, 0.5),
+        (0, 1, 0.5),
+        (0, 0, 1),
+        (1, 0, 1),
+        (1, 1, 1),
+        (0, 1, 1),
+    ]
+    lines = [
+        (0, 1),
+        (1, 2),
+        (2, 3),
+        (3, 0),
+        (0, 4),
+        (1, 5),
+        (2, 6),
+        (3, 7),
+        (4, 5),
+        (5, 6),
+        (6, 7),
+        (7, 4),
+        (4, 8),
+        (5, 9),
+        (6, 10),
+        (7, 11),
+        (8, 9),
+        (9, 10),
+        (10, 11),
+        (11, 8),
+    ]
+    surfaces = [
+        (0, 1, 2, 3),
+        (0, 5, -8, -4),
+        (1, 6, -9, -5),
+        (2, 7, -10, -6),
+        (3, 4, -11, -7),
+        (8, 9, 10, 11),
+        (8, 13, -16, -12),
+        (9, 14, -17, -13),
+        (10, 15, -18, -14),
+        (11, 12, -19, -15),
+        (16, 17, 18, 19),
+    ]
     volumes = [(0, 1, 2, 3, 4, 5), (5, 6, 7, 8, 9, 10)]
 
     _assemble_gmsh_mesh(lc, vertices, lines, surfaces, volumes)
@@ -1326,11 +1675,11 @@ def mixed_tets_hexa(output_path: str, lc: float = 0.05):
     gmsh.model.geo.synchronize()
 
     # create the hexahedral half using transfinite meshing
-    NN = int(1/lc)
+    NN = int(1 / lc)
     for c in [1, 2, 3, 4, 9, 10, 11, 12]:
         gmsh.model.mesh.setTransfiniteCurve(c, NN)
     for c in [5, 6, 7, 8]:
-        gmsh.model.mesh.setTransfiniteCurve(c, NN//2)
+        gmsh.model.mesh.setTransfiniteCurve(c, NN // 2)
     for s in range(1, 7):
         gmsh.model.mesh.setTransfiniteSurface(s)
         gmsh.model.mesh.setRecombine(2, s)
@@ -1342,9 +1691,7 @@ def mixed_tets_hexa(output_path: str, lc: float = 0.05):
     gmsh.finalize()
 
 
-def tetrahedra_from_stl(surface_path: str,
-                        min_size: float = 0,
-                        remesh: bool = False):
+def tetrahedra_from_stl(surface_path: str, min_size: float = 0, remesh: bool = False):
     """Create a tetrahedral mesh from a STL file.
 
     Generates tetrahedral elements starting from the surface triangulation in
@@ -1375,7 +1722,8 @@ def tetrahedra_from_stl(surface_path: str,
 
     # remesh surface
     if remesh:
-        gmsh.onelab.set("""[
+        gmsh.onelab.set(
+            """[
         {
             "type":"number",
             "name":"Angle",
@@ -1383,9 +1731,12 @@ def tetrahedra_from_stl(surface_path: str,
             "min":20,
             "max":120,
             "step":1
-        }]""")
+        }]"""
+        )
 
-        gmsh.model.mesh.classifySurfaces(gmsh.onelab.getNumber('Angle')[0]/180*gmsh.pi, True, True, gmsh.pi)
+        gmsh.model.mesh.classifySurfaces(
+            gmsh.onelab.getNumber("Angle")[0] / 180 * gmsh.pi, True, True, gmsh.pi
+        )
         gmsh.model.mesh.createGeometry()
 
     s = gmsh.model.getEntities(2)  # get the ids of all the triangles
@@ -1395,12 +1746,12 @@ def tetrahedra_from_stl(surface_path: str,
     gmsh.model.geo.synchronize()
     # gmsh.option.setNumber('Mesh.Algorithm', 1)
     # gmsh.option.setNumber('Mesh.MeshSizeMax', mesh_size)
-    gmsh.option.setNumber('Mesh.MeshSizeMin', min_size)
+    gmsh.option.setNumber("Mesh.MeshSizeMin", min_size)
 
     gmsh.model.mesh.generate(3)
 
     # save in the same folder as vtk
-    gmsh.write(surface_path[:-3]+'vtk')
+    gmsh.write(surface_path[:-3] + "vtk")
 
     gmsh.fltk.run()
 
@@ -1414,10 +1765,10 @@ def _gmsh_circle(c: tuple[float, float], r: float, lc: float):
     """
     center = gmsh.model.geo.addPoint(c[0], c[1], 0)
 
-    p1 = gmsh.model.geo.addPoint(c[0]+r, c[1], 0, lc)
-    p2 = gmsh.model.geo.addPoint(c[0], c[1]+r, 0, lc)
-    p3 = gmsh.model.geo.addPoint(c[0]-r, c[1], 0, lc)
-    p4 = gmsh.model.geo.addPoint(c[0], c[1]-r, 0, lc)
+    p1 = gmsh.model.geo.addPoint(c[0] + r, c[1], 0, lc)
+    p2 = gmsh.model.geo.addPoint(c[0], c[1] + r, 0, lc)
+    p3 = gmsh.model.geo.addPoint(c[0] - r, c[1], 0, lc)
+    p4 = gmsh.model.geo.addPoint(c[0], c[1] - r, 0, lc)
 
     a1 = gmsh.model.geo.addCircleArc(p1, center, p2)
     a2 = gmsh.model.geo.addCircleArc(p2, center, p3)
@@ -1449,21 +1800,23 @@ def _get_gmsh_2D_graph_data():
     # get tets and faces
     _, nodeTags = gmsh.model.mesh.getElementsByType(2, -1)
     faces_nodes = gmsh.model.mesh.getElementEdgeNodes(2, -1)
-    n_tria = int(len(nodeTags)/3)
+    n_tria = int(len(nodeTags) / 3)
     trias = list(range(n_tria))
 
     # presort face nodes id:
-    Faces = [tuple(sorted(faces_nodes[i:i+2])) for i in range(0, len(faces_nodes), 2)]
+    Faces = [
+        tuple(sorted(faces_nodes[i : i + 2])) for i in range(0, len(faces_nodes), 2)
+    ]
     # compute face x triangle incidence
     FxT = {Faces[i]: [] for i in range(len(Faces))}
     # loop over all faces
     for i in range(len(Faces)):
-        tria = trias[i//3]  # every triangle has 3 faces
+        tria = trias[i // 3]  # every triangle has 3 faces
         FxT[Faces[i]].append(tria)
 
     Adjacency = np.zeros((n_tria, n_tria), dtype=adj_ind_type)
     for i in range(len(Faces)):
-        tria = trias[i//3]
+        tria = trias[i // 3]
         for tt in FxT[Faces[i]]:
             if tt != tria:
                 Adjacency[tria, tt] = 1
@@ -1474,9 +1827,9 @@ def _get_gmsh_2D_graph_data():
     Volumes = np.zeros((n_tria, 1))
     _, Vertices, _ = gmsh.model.mesh.getNodesByElementType(2, -1)  # nodes of all tria
     for i in range(0, len(Vertices), 9):
-        cell_vertices = np.array(Vertices[i:i+9]).reshape((3, 3))[:, :2]
-        Baricenters[i//9] = tetrahedron_center(cell_vertices)
-        Volumes[i//9] = tetrahedron_volume(cell_vertices)
+        cell_vertices = np.array(Vertices[i : i + 9]).reshape((3, 3))[:, :2]
+        Baricenters[i // 9] = tetrahedron_center(cell_vertices)
+        Volumes[i // 9] = tetrahedron_volume(cell_vertices)
 
     return Adjacency, Baricenters, Volumes
 
@@ -1503,21 +1856,23 @@ def _get_gmsh_graph_data():
     # get tets and faces
     _, nodeTags = gmsh.model.mesh.getElementsByType(4, -1)
     faces_nodes = gmsh.model.mesh.getElementFaceNodes(4, 3)
-    n_tetrahedra = int(len(nodeTags)/4)
+    n_tetrahedra = int(len(nodeTags) / 4)
     tets = list(range(n_tetrahedra))
 
     # presort face nodes id:
-    Faces = [tuple(sorted(faces_nodes[i:i+3])) for i in range(0, len(faces_nodes), 3)]
+    Faces = [
+        tuple(sorted(faces_nodes[i : i + 3])) for i in range(0, len(faces_nodes), 3)
+    ]
     # # compute face x tetrahedron incidence
     FxT = {Faces[i]: [] for i in range(len(Faces))}
     # loop over all faces
     for i in range(len(Faces)):
-        tet = tets[i//4]  # every tetrahedron has 4 faces
+        tet = tets[i // 4]  # every tetrahedron has 4 faces
         FxT[Faces[i]].append(tet)
 
     Adjacency = np.zeros((n_tetrahedra, n_tetrahedra), dtype=adj_ind_type)
     for i in range(len(Faces)):
-        tet = tets[i//4]
+        tet = tets[i // 4]
         for tt in FxT[Faces[i]]:
             if tt != tet:
                 Adjacency[tet, tt] = 1
@@ -1526,11 +1881,13 @@ def _get_gmsh_graph_data():
 
     Baricenters = np.zeros((n_tetrahedra, 3))
     Volumes = np.zeros((n_tetrahedra, 1))
-    _, Vertices, _ = gmsh.model.mesh.getNodesByElementType(4, -1)  # nodes of all tetrahedra
+    _, Vertices, _ = gmsh.model.mesh.getNodesByElementType(
+        4, -1
+    )  # nodes of all tetrahedra
     for i in range(0, len(Vertices), 12):
-        cell_vertices = np.array(Vertices[i:i+12]).reshape((4, 3))
-        Baricenters[i//12] = tetrahedron_center(cell_vertices)
-        Volumes[i//12] = tetrahedron_volume(cell_vertices)
+        cell_vertices = np.array(Vertices[i : i + 12]).reshape((4, 3))
+        Baricenters[i // 12] = tetrahedron_center(cell_vertices)
+        Volumes[i // 12] = tetrahedron_volume(cell_vertices)
 
     return Adjacency, Baricenters, Volumes
 
@@ -1557,24 +1914,29 @@ def _get_gmsh_physical_groups(element_type=4) -> np.ndarray:
     so to have a non connected part of the mesh with same physical group we
     change it here.
     """
-    Physical_Groups = np.zeros((len(gmsh.model.mesh.getElementsByType(element_type, -1)[0]), 1))
+    Physical_Groups = np.zeros(
+        (len(gmsh.model.mesh.getElementsByType(element_type, -1)[0]), 1)
+    )
 
     for dim, physical_group in gmsh.model.getPhysicalGroups():
         # return volume tag for physical group.
         entity_tags = gmsh.model.getEntitiesForPhysicalGroup(dim, physical_group)
         for entity_tag in entity_tags:
             cell_tags, _ = gmsh.model.mesh.getElementsByType(element_type, entity_tag)
-            Physical_Groups[cell_tags-1] = physical_group  # Gmsh indexing starts from 1
+            Physical_Groups[cell_tags - 1] = (
+                physical_group  # Gmsh indexing starts from 1
+            )
 
     return Physical_Groups
 
 
-def _assemble_gmsh_mesh(lc: float,
-                        vertices: np.ndarray,
-                        lines: list[tuple[int, int]],
-                        surfaces: list[list[int]],
-                        volumes: list[list[int]]
-                        ) -> list[int]:
+def _assemble_gmsh_mesh(
+    lc: float,
+    vertices: np.ndarray,
+    lines: list[tuple[int, int]],
+    surfaces: list[list[int]],
+    volumes: list[list[int]],
+) -> list[int]:
     """Adds all geometrical entities to the current model.
 
     Parameters
@@ -1598,10 +1960,14 @@ def _assemble_gmsh_mesh(lc: float,
     # add the lines
     lines = [gmsh.model.geo.addLine(points[i], points[j]) for i, j in lines]
     # add the curve loops
-    surfaces = [[lines[i] if i >= 0 else -lines[-i] for i in surface] for surface in surfaces]
+    surfaces = [
+        [lines[i] if i >= 0 else -lines[-i] for i in surface] for surface in surfaces
+    ]
     curve_loops = [gmsh.model.geo.addCurveLoop(loop) for loop in surfaces]
     # Add the surfaces
-    Faces = [gmsh.model.geo.addSurfaceFilling([surface_loop]) for surface_loop in curve_loops]
+    Faces = [
+        gmsh.model.geo.addSurfaceFilling([surface_loop]) for surface_loop in curve_loops
+    ]
     # create surface loop and add volumes
     volume_tags = []
     for volume in volumes:

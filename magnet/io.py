@@ -17,18 +17,18 @@ import scipy.io
 import meshio
 import vtk
 
-from magnet.mesh import (Mesh, MeshDataset,
-                         AggMesh, AggMeshDataset, Boundary)
+from magnet.mesh import Mesh, MeshDataset, AggMesh, AggMeshDataset, Boundary
 from magnet import cell
 from magnet._types import adj_ind_type
 
 
-def load_mesh(mesh_path: str,
-              mesh_graph: Mesh | str | None = None,
-              dim: int | None = None,
-              get_boundary: bool = False,
-              **kwargs
-              ) -> AggMesh:
+def load_mesh(
+    mesh_path: str,
+    mesh_graph: Mesh | str | None = None,
+    dim: int | None = None,
+    get_boundary: bool = False,
+    **kwargs,
+) -> AggMesh:
     """Load mesh from file.
 
     Loads mesh data from file; if the mesh graph data is not provided, it is
@@ -76,36 +76,47 @@ def load_mesh(mesh_path: str,
     # use given graph data (if provided):
     if mesh_graph is not None:
         if isinstance(mesh_graph, Mesh):
-            return AggMesh(vertices, cells, mesh_graph.Adjacency,
-                           mesh_graph.Coords, mesh_graph.Volumes,
-                           mesh_graph.Physical_Groups, boundary)
-        if mesh_graph.endswith('.npz'):
+            return AggMesh(
+                vertices,
+                cells,
+                mesh_graph.Adjacency,
+                mesh_graph.Coords,
+                mesh_graph.Volumes,
+                mesh_graph.Physical_Groups,
+                boundary,
+            )
+        if mesh_graph.endswith(".npz"):
             # load from file
             npz_mesh = np.load(mesh_graph, allow_pickle=True)
-            if 'physical_groups' in npz_mesh.files:
+            if "physical_groups" in npz_mesh.files:
                 return AggMesh(
-                    vertices, cells,
-                    npz_mesh['adjacency'].item(),
-                    npz_mesh['coords'],
-                    npz_mesh['volumes'],
-                    npz_mesh['physical_groups'],
-                    boundary)
+                    vertices,
+                    cells,
+                    npz_mesh["adjacency"].item(),
+                    npz_mesh["coords"],
+                    npz_mesh["volumes"],
+                    npz_mesh["physical_groups"],
+                    boundary,
+                )
             else:
                 return AggMesh(
-                    vertices, cells,
-                    npz_mesh['adjacency'].item(),
-                    npz_mesh['coords'],
-                    npz_mesh['volumes'],
-                    boundary=boundary)
+                    vertices,
+                    cells,
+                    npz_mesh["adjacency"].item(),
+                    npz_mesh["coords"],
+                    npz_mesh["volumes"],
+                    boundary=boundary,
+                )
         else:
-            raise ValueError('Invalid mesh graph path.')
+            raise ValueError("Invalid mesh graph path.")
     else:
         # Compute the graph representation when not given:
         Adjacency = _compute_adjacency_matrix(cells)
         Centroids, Volumes = _extract_node_features(cells, vertices, dim)
         Physical_Groups = _extract_physical_params(M, dim)
-        return AggMesh(vertices, cells, Adjacency, Centroids, Volumes,
-                       Physical_Groups, boundary)
+        return AggMesh(
+            vertices, cells, Adjacency, Centroids, Volumes, Physical_Groups, boundary
+        )
 
 
 def _make_cells(mesh: meshio.Mesh, vertices: np.ndarray, dim: int):
@@ -130,36 +141,36 @@ def _make_cells(mesh: meshio.Mesh, vertices: np.ndarray, dim: int):
 
     for cellBlock in mesh.cells:
         match cellBlock.type:
-            case 'vertex' | 'line':
+            case "vertex" | "line":
                 pass  # ignore these elements
-            case 'triangle':
+            case "triangle":
                 if dim == 2:
                     for C in cellBlock.data:
                         cells.append(cell.Triangle(C, vertices))
-            case'quad' | 'polygon':
+            case "quad" | "polygon":
                 if dim == 2:
                     for C in cellBlock.data:
                         cells.append(cell.Polygon(C, vertices))
-            case 'tetra':
+            case "tetra":
                 for C in cellBlock.data:
                     cells.append(cell.Tetrahedron(C, vertices))
-            case 'hexahedron':
+            case "hexahedron":
                 for C in cellBlock.data:
                     cells.append(cell.Hexahedron(C, vertices))
-            case 'pyramid':
+            case "pyramid":
                 for C in cellBlock.data:
                     cells.append(cell.Pyramid(C, vertices))
             case _:
-                raise NotImplementedError('Cell type %s not supported.'
-                                          % cellBlock.type)
+                raise NotImplementedError(
+                    "Cell type %s not supported." % cellBlock.type
+                )
 
     return cells
 
 
-def _extract_node_features(cells: list[cell.Cell],
-                           vertices: np.ndarray,
-                           dim: int
-                           ) -> tuple[np.ndarray, np.ndarray]:
+def _extract_node_features(
+    cells: list[cell.Cell], vertices: np.ndarray, dim: int
+) -> tuple[np.ndarray, np.ndarray]:
     """Compute mesh graph node features.
 
     Computes the centroid coordinates and volumes of the cells of the mesh.
@@ -217,8 +228,7 @@ def _compute_adjacency_matrix(cells: list[cell.Cell]) -> sparse.csr_matrix:
     # faster to insert elements, but if it's high we must use a sparse matrix
     # to save memory. `lil_matrix` is used for populating it.
     if num_cells > 50000:
-        Adjacency = sparse.lil_matrix((num_cells, num_cells),
-                                      dtype=adj_ind_type)
+        Adjacency = sparse.lil_matrix((num_cells, num_cells), dtype=adj_ind_type)
     else:
         Adjacency = np.zeros((num_cells, num_cells), dtype=adj_ind_type)
 
@@ -232,10 +242,9 @@ def _compute_adjacency_matrix(cells: list[cell.Cell]) -> sparse.csr_matrix:
     return sparse.csr_matrix(Adjacency, dtype=adj_ind_type)
 
 
-def _extract_physical_params(mesh: meshio.Mesh,
-                             dim: int,
-                             tag_name: str | None = None
-                             ) -> np.ndarray:
+def _extract_physical_params(
+    mesh: meshio.Mesh, dim: int, tag_name: str | None = None
+) -> np.ndarray:
     """Extract physical group of the mesh.
 
     Parameters
@@ -262,25 +271,24 @@ def _extract_physical_params(mesh: meshio.Mesh,
     for cellBlock in mesh.cells:
         d = mesh.cell_data_dict[tag_name][cellBlock.type].reshape((-1, 1))
         match cellBlock.type:
-            case 'line' | 'vertex':
+            case "line" | "vertex":
                 pass
-            case 'triangle' | 'quad' | 'polygon':
+            case "triangle" | "quad" | "polygon":
                 if dim == 2:
                     Physical_Groups = np.concatenate((Physical_Groups, d))
-            case 'tetra' | 'hexahedron' | 'pyramid':
+            case "tetra" | "hexahedron" | "pyramid":
                 Physical_Groups = np.concatenate((Physical_Groups, d))
             case _:
                 raise NotImplementedError(
-                    'Cell type %s not supported.' % cellBlock.type)
+                    "Cell type %s not supported." % cellBlock.type
+                )
 
     return Physical_Groups
 
 
-def extract_boundary(mesh: meshio.Mesh,
-                     dim: int,
-                     b_tags: np.ndarray = None,
-                     b_tag_name: str = None
-                     ) -> Boundary:
+def extract_boundary(
+    mesh: meshio.Mesh, dim: int, b_tags: np.ndarray = None, b_tag_name: str = None
+) -> Boundary:
     """Get boundary elements of the mesh.
 
     Extract boundary faces (or boundary edges, in 2D), and saves them in a
@@ -317,12 +325,15 @@ def extract_boundary(mesh: meshio.Mesh,
     # no cell data present: insert all elements with suitable dimension;
     if not mesh.cell_data:
         if b_tags is not None:
-            warnings.warn('Tags were provided, but cell data was not found.'
-                          + 'Inserting all elements with suitable dimension.')
+            warnings.warn(
+                "Tags were provided, but cell data was not found."
+                + "Inserting all elements with suitable dimension."
+            )
 
         for cellBlock in mesh.cells:
-            if ((dim == 3 and cellBlock.type in {'triangle', 'quad', 'polygon'})
-                    or (dim == 2 and cellBlock.type == 'line')):
+            if (dim == 3 and cellBlock.type in {"triangle", "quad", "polygon"}) or (
+                dim == 2 and cellBlock.type == "line"
+            ):
                 boundary.extend(list(cellBlock.data))
 
         return Boundary(boundary, np.ones(len(boundary), dtype=int))
@@ -332,7 +343,10 @@ def extract_boundary(mesh: meshio.Mesh,
         b_tag_name = next(iter(mesh.cell_data_dict))
     # compute mask of the elements to extract:
     if b_tags is None:
-        def to_be_extracted(tag: int): return True
+
+        def to_be_extracted(tag: int):
+            return True
+
     else:
         b_tags = np.array(b_tags)
 
@@ -342,21 +356,24 @@ def extract_boundary(mesh: meshio.Mesh,
     for cellBlock in mesh.cells:
         block_tags = mesh.cell_data_dict[b_tag_name][cellBlock.type]
 
-        if ((dim == 3 and cellBlock.type in {'triangle', 'quad', 'polygon'})
-                or (dim == 2 and cellBlock.type == 'line')):
+        if (dim == 3 and cellBlock.type in {"triangle", "quad", "polygon"}) or (
+            dim == 2 and cellBlock.type == "line"
+        ):
 
             mask = [to_be_extracted(block_tags[i]) for i in range(len(block_tags))]
             boundary.extend(list(cellBlock.data[mask]))
-            boundary_tags = np.concatenate((boundary_tags,
-                                            block_tags[mask].reshape((sum(mask), 1))))
+            boundary_tags = np.concatenate(
+                (boundary_tags, block_tags[mask].reshape((sum(mask), 1)))
+            )
 
     return Boundary(boundary, boundary_tags)
 
 
-def load_dataset(dataset_path: str,
-                 extension: str = 'vtk',
-                 base_name: str = 'mesh',
-                 ) -> AggMeshDataset:
+def load_dataset(
+    dataset_path: str,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+) -> AggMeshDataset:
     """Load mesh dataset from folder.
 
     The folder should contain the mesh file plus the .npz file (with the same
@@ -392,32 +409,36 @@ def load_dataset(dataset_path: str,
     Dimension:  10
     """
     dataset_name = os.path.basename(os.path.normpath(dataset_path))
-    npz_dataset = np.load(dataset_path+'/'+dataset_name+'.npz',
-                          allow_pickle=True)
-    dataset_size = len(npz_dataset['adjacency'].item())
+    npz_dataset = np.load(dataset_path + "/" + dataset_name + ".npz", allow_pickle=True)
+    dataset_size = len(npz_dataset["adjacency"].item())
 
     mesh_list = []
-    adjacency = npz_dataset['adjacency'].item()
-    coords = npz_dataset['coords'].item()
-    volumes = npz_dataset['volumes'].item()
-    if 'physical_groups' in npz_dataset.files:
-        physical_groups = npz_dataset['physical_groups'].item()
+    adjacency = npz_dataset["adjacency"].item()
+    coords = npz_dataset["coords"].item()
+    volumes = npz_dataset["volumes"].item()
+    if "physical_groups" in npz_dataset.files:
+        physical_groups = npz_dataset["physical_groups"].item()
     else:
         physical_groups = [None for i in range(dataset_size)]
 
     for index in range(dataset_size):
-        M = meshio.read(dataset_path+'/'+base_name+str(index)+'.'+extension)
+        M = meshio.read(dataset_path + "/" + base_name + str(index) + "." + extension)
         dim = coords[index].shape[-1]
         verts = M.points[:, :dim].astype(np.float64)
         cells = _make_cells(M, verts, dim)
-        mesh_list.append(AggMesh(vertices=verts, cells=cells,
-                                 adjacency=adjacency[index],
-                                 coords=coords[index],
-                                 volumes=volumes[index],
-                                 physical_groups=physical_groups[index]))
+        mesh_list.append(
+            AggMesh(
+                vertices=verts,
+                cells=cells,
+                adjacency=adjacency[index],
+                coords=coords[index],
+                volumes=volumes[index],
+                physical_groups=physical_groups[index],
+            )
+        )
 
-    print('Name:\t\t', dataset_name)
-    print('Dimension:\t', dataset_size)
+    print("Name:\t\t", dataset_name)
+    print("Dimension:\t", dataset_size)
 
     return AggMeshDataset(mesh_list, dataset_name)
 
@@ -449,30 +470,36 @@ def load_graph_dataset(dataset_path: str) -> MeshDataset:
     generate.dataset_3D : Generate dataset of 3D meshes.
     """
     # get the name of dataset and load it.
-    if dataset_path.endswith('.npz'):
+    if dataset_path.endswith(".npz"):
         dataset_name = os.path.basename(dataset_path)[:-4]
         npz_dataset = np.load(dataset_path, allow_pickle=True)
     else:
         dataset_name = os.path.basename(os.path.normpath(dataset_path))
-        npz_dataset = np.load(dataset_path+'/'+dataset_name+'.npz',
-                              allow_pickle=True)
-    dataset_size = len(npz_dataset['adjacency'].item())
+        npz_dataset = np.load(
+            dataset_path + "/" + dataset_name + ".npz", allow_pickle=True
+        )
+    dataset_size = len(npz_dataset["adjacency"].item())
 
-    adjacency = npz_dataset['adjacency'].item()
-    coords = npz_dataset['coords'].item()
-    volumes = npz_dataset['volumes'].item()
-    if 'physical_groups' in npz_dataset.files:  # there is a physical group
-        physical_groups = npz_dataset['physical_groups'].item()
+    adjacency = npz_dataset["adjacency"].item()
+    coords = npz_dataset["coords"].item()
+    volumes = npz_dataset["volumes"].item()
+    if "physical_groups" in npz_dataset.files:  # there is a physical group
+        physical_groups = npz_dataset["physical_groups"].item()
     else:
         physical_groups = [None for i in range(dataset_size)]
 
-    mesh_list = [Mesh(adjacency=adjacency[i],
-                      coords=coords[i], volumes=volumes[i],
-                      physical_groups=physical_groups[i])
-                 for i in range(dataset_size)]
+    mesh_list = [
+        Mesh(
+            adjacency=adjacency[i],
+            coords=coords[i],
+            volumes=volumes[i],
+            physical_groups=physical_groups[i],
+        )
+        for i in range(dataset_size)
+    ]
 
-    print('Name:\t\t', dataset_name)
-    print('Dimension:\t', dataset_size)
+    print("Name:\t\t", dataset_name)
+    print("Dimension:\t", dataset_size)
 
     return MeshDataset(mesh_list, dataset_name)
 
@@ -503,34 +530,42 @@ def load_mat_dataset(dataset_path: str) -> MeshDataset:
     --------
     load_graph_dataset : Load mesh graph dataset from `.npz` file.
     """
-    adjacencies = np.squeeze(scipy.io.loadmat(
-        dataset_path+'/AdjacencyMatrices.mat')['AdjacencyMatrices'], 0)
-    coords = np.squeeze(scipy.io.loadmat(
-        dataset_path+'/CoordMatrices.mat')['CoordMatrices'], 0)
-    areas = np.squeeze(scipy.io.loadmat(
-        dataset_path+'/AreaVectors.mat')['AreaVectors'], 0)
+    adjacencies = np.squeeze(
+        scipy.io.loadmat(dataset_path + "/AdjacencyMatrices.mat")["AdjacencyMatrices"],
+        0,
+    )
+    coords = np.squeeze(
+        scipy.io.loadmat(dataset_path + "/CoordMatrices.mat")["CoordMatrices"], 0
+    )
+    areas = np.squeeze(
+        scipy.io.loadmat(dataset_path + "/AreaVectors.mat")["AreaVectors"], 0
+    )
 
     dataset_name = os.path.basename(os.path.normpath(dataset_path))
     dataset_size = areas.shape[-1]
 
-    output = [Mesh(
-              adjacency=sparse.csr_matrix(adjacencies[i], dtype=adj_ind_type),
-              coords=coords[i],
-              volumes=areas[i])
-              for i in range(dataset_size)]
+    output = [
+        Mesh(
+            adjacency=sparse.csr_matrix(adjacencies[i], dtype=adj_ind_type),
+            coords=coords[i],
+            volumes=areas[i],
+        )
+        for i in range(dataset_size)
+    ]
 
-    print('Name:\t\t', dataset_name)
-    print('Dimension:\t', dataset_size)
+    print("Name:\t\t", dataset_name)
+    print("Dimension:\t", dataset_size)
 
     return MeshDataset(output, dataset_name)
 
 
-def create_dataset(dataset_path: str,
-                   dataset_size: int,
-                   extension: str = 'vtk',
-                   base_name: str = 'mesh',
-                   **kwargs
-                   ) -> None:
+def create_dataset(
+    dataset_path: str,
+    dataset_size: int,
+    extension: str = "vtk",
+    base_name: str = "mesh",
+    **kwargs,
+) -> None:
     """Create dataset from mesh folder.
 
     Parameters
@@ -560,8 +595,9 @@ def create_dataset(dataset_path: str,
     adjacencies, coords, volumes, physical_groups = {}
 
     for i in range(dataset_size):
-        M = load_mesh(dataset_path+'/'+base_name+str(i)+'.'+extension,
-                      **kwargs)
+        M = load_mesh(
+            dataset_path + "/" + base_name + str(i) + "." + extension, **kwargs
+        )
 
         adjacencies[i] = M.Adjacency
         coords[i] = M.Coords
@@ -569,18 +605,29 @@ def create_dataset(dataset_path: str,
         physical_groups[i] = M.Physical_Groups
         n_cells[i] = volumes[i].shape[0]
 
-    print('Saving...')
-    np.savez(dataset_path+'/'+dataset_name,
-             adjacency=adjacencies, coords=coords, volumes=volumes)
+    print("Saving...")
+    np.savez(
+        dataset_path + "/" + dataset_name,
+        adjacency=adjacencies,
+        coords=coords,
+        volumes=volumes,
+    )
 
     # save log file
-    content = ('Dataset name:\t'+dataset_name+'\n'
-               + 'Total number of meshes:\t'+str(dataset_size)+'\n'
-               + 'minimum number of elements:\t'+str(min(n_cells))
-               + '\t\tmaximum:\t'+str(max(n_cells))
-               )
+    content = (
+        "Dataset name:\t"
+        + dataset_name
+        + "\n"
+        + "Total number of meshes:\t"
+        + str(dataset_size)
+        + "\n"
+        + "minimum number of elements:\t"
+        + str(min(n_cells))
+        + "\t\tmaximum:\t"
+        + str(max(n_cells))
+    )
 
-    with open(dataset_path+'/'+dataset_name+'_details.txt', 'w') as f:
+    with open(dataset_path + "/" + dataset_name + "_details.txt", "w") as f:
         f.write(content)
         f.close()
 
@@ -604,24 +651,21 @@ def save_mesh(self: AggMesh, output_path: str) -> None:
     """
     if self.dim == 2:
         # pad points to 3D with 0 third coordinate
-        points = np.pad(self.Vertices, ((0, 0), (0, 1)),
-                        'constant', constant_values=0)
+        points = np.pad(self.Vertices, ((0, 0), (0, 1)), "constant", constant_values=0)
         # insert polygonal cells
-        polygons = [('polygon', np.array(C.Nodes).reshape((1, -1)))
-                    for C in self.Cells]
-        CellEntityIds = [self.Physical_Groups[i].reshape((1, 1))
-                         for i in range(self.num_cells)]
+        polygons = [("polygon", np.array(C.Nodes).reshape((1, -1))) for C in self.Cells]
+        CellEntityIds = [
+            self.Physical_Groups[i].reshape((1, 1)) for i in range(self.num_cells)
+        ]
         # insert cell data corresponding to physical groups
-        cell_data = {'CellEntityIds': CellEntityIds}
+        cell_data = {"CellEntityIds": CellEntityIds}
         # insert boundary edges (if any)
         if self.Boundary is not None:
             boundary_edges = np.array(self.Boundary.Faces)
-            polygons.append(('line', boundary_edges))
-            cell_data['CellEntityIds'].append(self.Boundary.Tags)
+            polygons.append(("line", boundary_edges))
+            cell_data["CellEntityIds"].append(self.Boundary.Tags)
 
-        output_mesh = meshio.Mesh(points=points,
-                                  cells=polygons,
-                                  cell_data=cell_data)
+        output_mesh = meshio.Mesh(points=points, cells=polygons, cell_data=cell_data)
         meshio.write(output_path, output_mesh)
     else:
         # insert vertices coordinates
@@ -685,25 +729,35 @@ def save_graph(mesh: Mesh, output_path: str) -> None:
     if mesh.Adjacency is None and isinstance(mesh, AggMesh):
         mesh.Adjacency = _compute_adjacency_matrix(mesh.Cells)
     if np.array_equal(mesh.Physical_Groups, np.zeros((mesh.num_cells, 1))):
-        np.savez(output_path, adjacency=mesh.Adjacency,
-                 coords=mesh.Coords, volumes=mesh.Volumes)
+        np.savez(
+            output_path,
+            adjacency=mesh.Adjacency,
+            coords=mesh.Coords,
+            volumes=mesh.Volumes,
+        )
     else:
-        np.savez(output_path, adjacency=mesh.Adjacency,
-                 coords=mesh.Coords, volumes=mesh.Volumes,
-                 physical_groups=mesh.Physical_Groups)
+        np.savez(
+            output_path,
+            adjacency=mesh.Adjacency,
+            coords=mesh.Coords,
+            volumes=mesh.Volumes,
+            physical_groups=mesh.Physical_Groups,
+        )
 
 
-def exploded_view(mesh: AggMesh,
-                  scale: float = 1,
-                  palette: str | list | None = None,
-                  background: str = 'white',
-                  edge_color: str | None = None,
-                  edge_width: int = 1,
-                  orientation: tuple[int, int, int] = (0, 0, 0),
-                  figsize: tuple[int, int] = (800, 600),
-                  save_image_path: str | None = None,
-                  image_scaling: int = 2,
-                  title: str = None):
+def exploded_view(
+    mesh: AggMesh,
+    scale: float = 1,
+    palette: str | list | None = None,
+    background: str = "white",
+    edge_color: str | None = None,
+    edge_width: int = 1,
+    orientation: tuple[int, int, int] = (0, 0, 0),
+    figsize: tuple[int, int] = (800, 600),
+    save_image_path: str | None = None,
+    image_scaling: int = 2,
+    title: str = None,
+):
     """Visualize exploded mesh using `vtk` renderer.
 
     Creates a `vtk` window interactor displaying the mesh, in which each
@@ -747,16 +801,16 @@ def exploded_view(mesh: AggMesh,
     None
     """
     if mesh.dim == 2:
-        raise ValueError('Mesh should be 3D.')
+        raise ValueError("Mesh should be 3D.")
 
     # Define the central point as center of the bounding box
     upper_bounds = np.max(mesh.Vertices, axis=0)
     lower_bounds = np.min(mesh.Vertices, axis=0)
-    center = (upper_bounds+lower_bounds)/2
+    center = (upper_bounds + lower_bounds) / 2
 
     colors = vtk.vtkUnsignedCharArray()
     colors.SetNumberOfComponents(3)
-    colors.SetName('Colors')
+    colors.SetName("Colors")
     # Assign a random color to the cell
 
     if isinstance(palette, str):
@@ -767,31 +821,32 @@ def exploded_view(mesh: AggMesh,
             colors.InsertNextTuple(color)
     else:
         if palette is None:
-            palette = [(66, 134, 244),   # Light Blue
-                       (244, 67, 54),    # Red
-                       (76, 175, 80),    # Green
-                       (255, 193, 7),    # Amber
-                       (156, 39, 176),   # Purple
-                       (0, 188, 212),    # Cyan
-                       (233, 30, 99),    # Pink
-                       (63, 81, 181),    # Indigo
-                       (139, 195, 74),   # Light Green
-                       (255, 152, 0),    # Orange
-                       (103, 58, 183),   # Deep Purple
-                       (3, 169, 244),    # Light Cyan
-                       (255, 87, 34),    # Deep Orange
-                       (205, 220, 57),   # Lime
-                       (0, 150, 136),    # Teal
-                       (121, 85, 72),    # Brown
-                       (255, 235, 59),   # Yellow
-                       (158, 158, 158),  # Grey
-                       (96, 125, 139),   # Blue Grey
-                       (244, 143, 177),  # Light Pink
-                       (129, 212, 250),  # Light Blue
-                       (197, 202, 233),  # Light Indigo
-                       (100, 221, 23),   # Light Green
-                       (255, 111, 0)     # Vivid Orange
-                       ]
+            palette = [
+                (66, 134, 244),  # Light Blue
+                (244, 67, 54),  # Red
+                (76, 175, 80),  # Green
+                (255, 193, 7),  # Amber
+                (156, 39, 176),  # Purple
+                (0, 188, 212),  # Cyan
+                (233, 30, 99),  # Pink
+                (63, 81, 181),  # Indigo
+                (139, 195, 74),  # Light Green
+                (255, 152, 0),  # Orange
+                (103, 58, 183),  # Deep Purple
+                (3, 169, 244),  # Light Cyan
+                (255, 87, 34),  # Deep Orange
+                (205, 220, 57),  # Lime
+                (0, 150, 136),  # Teal
+                (121, 85, 72),  # Brown
+                (255, 235, 59),  # Yellow
+                (158, 158, 158),  # Grey
+                (96, 125, 139),  # Blue Grey
+                (244, 143, 177),  # Light Pink
+                (129, 212, 250),  # Light Blue
+                (197, 202, 233),  # Light Indigo
+                (100, 221, 23),  # Light Green
+                (255, 111, 0),  # Vivid Orange
+            ]
             for i in range(mesh.num_cells):
                 colors.InsertNextTuple(palette[i % len(palette)])
 
@@ -804,15 +859,17 @@ def exploded_view(mesh: AggMesh,
     for i, C in enumerate(mesh.Cells):
 
         # compute translated points
-        translation_vector = scale*(mesh.Coords[i] - center)
+        translation_vector = scale * (mesh.Coords[i] - center)
         new_cell_points = vtk.vtkPoints()
         for point in C.Nodes:
             new_point = mesh.Vertices[point] + translation_vector
             new_cell_points.InsertNextPoint(*new_point)
 
         # Add the points to the points list
-        point_ids = [points.InsertNextPoint(new_cell_points.GetPoint(j))
-                     for j in range(new_cell_points.GetNumberOfPoints())]
+        point_ids = [
+            points.InsertNextPoint(new_cell_points.GetPoint(j))
+            for j in range(new_cell_points.GetNumberOfPoints())
+        ]
 
         # insert new polyhedral cell
         old_to_new = {C.Nodes[i]: point_ids[i] for i in range(len(C.Nodes))}
@@ -838,8 +895,7 @@ def exploded_view(mesh: AggMesh,
     # Set edge visibility and color
     if edge_color is not None:
         actor.GetProperty().SetEdgeVisibility(1)
-        actor.GetProperty().SetEdgeColor(
-            vtk.vtkNamedColors().GetColor3d(edge_color))
+        actor.GetProperty().SetEdgeColor(vtk.vtkNamedColors().GetColor3d(edge_color))
         actor.GetProperty().SetLineWidth(edge_width)
 
     # Set initial rotation of the object (pitch, yaw, roll in degrees)
