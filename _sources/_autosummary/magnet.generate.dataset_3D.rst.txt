@@ -1,0 +1,6 @@
+magnet.generate.dataset\_3D
+===========================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: dataset_3D

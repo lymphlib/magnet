@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>magnet.aggmodels.sageheterogeneous.GNNHeterogeneous &#8212; Magnet 0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/magnet.aggmodels.sageheterogeneous.GNNHeterogeneous';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="magnet.aggmodels.sageheterogeneous.SageHeterogeneous" href="magnet.aggmodels.sageheterogeneous.SageHeterogeneous.html" />
+    <link rel="prev" title="magnet.aggmodels.sageheterogeneous" href="magnet.aggmodels.sageheterogeneous.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Magnet 0.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    User guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../manual.html">
+    Reference manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lymph_interface/lymph.html">
+    Lymph interface
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    User guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../manual.html">
+    Reference manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lymph_interface/lymph.html">
+    Lymph interface
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="magnet.aggmodels.html">magnet.aggmodels</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.gnn.html">magnet.aggmodels.gnn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.gnn.GNN.html">magnet.aggmodels.gnn.GNN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.gnn.GeometricGNN.html">magnet.aggmodels.gnn.GeometricGNN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.gnn.ReinforceLearnGNN.html">magnet.aggmodels.gnn.ReinforceLearnGNN</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.kmeans.html">magnet.aggmodels.kmeans</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.kmeans.KMEANS.html">magnet.aggmodels.kmeans.KMEANS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.metis.html">magnet.aggmodels.metis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.metis.METIS.html">magnet.aggmodels.metis.METIS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.refiner.html">magnet.aggmodels.refiner</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.refiner.DRLRefiner.html">magnet.aggmodels.refiner.DRLRefiner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.refiner.RefGatti.html">magnet.aggmodels.refiner.RefGatti</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.refiner.Reyyy.html">magnet.aggmodels.refiner.Reyyy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.html">magnet.aggmodels.rlpartitioner</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.ContigDRLCP.html">magnet.aggmodels.rlpartitioner.ContigDRLCP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.DRLCPGatti.html">magnet.aggmodels.rlpartitioner.DRLCPGatti</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.DRLCoarsePartioner.html">magnet.aggmodels.rlpartitioner.DRLCoarsePartioner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.WeakContigDRLCP.html">magnet.aggmodels.rlpartitioner.WeakContigDRLCP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="magnet.aggmodels.sagebase.html">magnet.aggmodels.sagebase</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.sagebase.SageBase.html">magnet.aggmodels.sagebase.SageBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.sagebase.SageBase2D.html">magnet.aggmodels.sagebase.SageBase2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.sagebase.SageRes.html">magnet.aggmodels.sagebase.SageRes</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="magnet.aggmodels.sageheterogeneous.html">magnet.aggmodels.sageheterogeneous</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">magnet.aggmodels.sageheterogeneous.GNNHeterogeneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="magnet.aggmodels.sageheterogeneous.SageHeterogeneous.html">magnet.aggmodels.sageheterogeneous.SageHeterogeneous</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.gnn.html">magnet.aggmodels.gnn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.gnn.GNN.html">magnet.aggmodels.gnn.GNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.gnn.GeometricGNN.html">magnet.aggmodels.gnn.GeometricGNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.gnn.ReinforceLearnGNN.html">magnet.aggmodels.gnn.ReinforceLearnGNN</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.kmeans.html">magnet.aggmodels.kmeans</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.kmeans.KMEANS.html">magnet.aggmodels.kmeans.KMEANS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.metis.html">magnet.aggmodels.metis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.metis.METIS.html">magnet.aggmodels.metis.METIS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.refiner.html">magnet.aggmodels.refiner</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.refiner.DRLRefiner.html">magnet.aggmodels.refiner.DRLRefiner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.refiner.RefGatti.html">magnet.aggmodels.refiner.RefGatti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.refiner.Reyyy.html">magnet.aggmodels.refiner.Reyyy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.html">magnet.aggmodels.rlpartitioner</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.ContigDRLCP.html">magnet.aggmodels.rlpartitioner.ContigDRLCP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.DRLCPGatti.html">magnet.aggmodels.rlpartitioner.DRLCPGatti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.DRLCoarsePartioner.html">magnet.aggmodels.rlpartitioner.DRLCoarsePartioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.rlpartitioner.WeakContigDRLCP.html">magnet.aggmodels.rlpartitioner.WeakContigDRLCP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.aggmodels.sagebase.html">magnet.aggmodels.sagebase</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.sagebase.SageBase.html">magnet.aggmodels.sagebase.SageBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.sagebase.SageBase2D.html">magnet.aggmodels.sagebase.SageBase2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.sagebase.SageRes.html">magnet.aggmodels.sagebase.SageRes</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="magnet.aggmodels.sageheterogeneous.html">magnet.aggmodels.sageheterogeneous</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">magnet.aggmodels.sageheterogeneous.GNNHeterogeneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.aggmodels.sageheterogeneous.SageHeterogeneous.html">magnet.aggmodels.sageheterogeneous.SageHeterogeneous</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet._absaggmodels.html">magnet._absaggmodels</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet._absaggmodels.AgglomerationModel.html">magnet._absaggmodels.AgglomerationModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.io.html">magnet.io</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.create_dataset.html">magnet.io.create_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.exploded_view.html">magnet.io.exploded_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.extract_boundary.html">magnet.io.extract_boundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.load_dataset.html">magnet.io.load_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.load_graph_dataset.html">magnet.io.load_graph_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.load_mat_dataset.html">magnet.io.load_mat_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.load_mesh.html">magnet.io.load_mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.save_graph.html">magnet.io.save_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.io.save_mesh.html">magnet.io.save_mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.generate.html">magnet.generate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.circular_holes.html">magnet.generate.circular_holes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.circular_inclusions.html">magnet.generate.circular_inclusions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.dataset_2D.html">magnet.generate.dataset_2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.dataset_2D_hetero.html">magnet.generate.dataset_2D_hetero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.dataset_3D.html">magnet.generate.dataset_3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.delaunay_tria.html">magnet.generate.delaunay_tria</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.double_circle.html">magnet.generate.double_circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.generate_Heterogeneous_cube.html">magnet.generate.generate_Heterogeneous_cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.generate_cube.html">magnet.generate.generate_cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.generate_cube_portion.html">magnet.generate.generate_cube_portion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.generate_dataset_heterogeneous.html">magnet.generate.generate_dataset_heterogeneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.heterogeneous_square.html">magnet.generate.heterogeneous_square</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.holed_square.html">magnet.generate.holed_square</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.mixed_tets_hexa.html">magnet.generate.mixed_tets_hexa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.structured_quads.html">magnet.generate.structured_quads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.structured_tria.html">magnet.generate.structured_tria</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.tetrahedra_from_stl.html">magnet.generate.tetrahedra_from_stl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.view_using_gmsh_fltk.html">magnet.generate.view_using_gmsh_fltk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.generate.voronoi_tess.html">magnet.generate.voronoi_tess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.mesh.html">magnet.mesh</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.create_grouped_boxplots.html">magnet.mesh.create_grouped_boxplots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.AggMesh.html">magnet.mesh.AggMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.AggMeshDataset.html">magnet.mesh.AggMeshDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.Boundary.html">magnet.mesh.Boundary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.Mesh.html">magnet.mesh.Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.mesh.MeshDataset.html">magnet.mesh.MeshDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.cell.html">magnet.cell</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Cell.html">magnet.cell.Cell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Hexahedron.html">magnet.cell.Hexahedron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Polygon.html">magnet.cell.Polygon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Polyhedron.html">magnet.cell.Polyhedron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Pyramid.html">magnet.cell.Pyramid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Quad.html">magnet.cell.Quad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Tetrahedron.html">magnet.cell.Tetrahedron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.cell.Triangle.html">magnet.cell.Triangle</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.geometric_utils.html">magnet.geometric_utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.closest_to_face.html">magnet.geometric_utils.closest_to_face</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.closest_to_segment.html">magnet.geometric_utils.closest_to_segment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.closest_to_triangle.html">magnet.geometric_utils.closest_to_triangle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.convexHull_center.html">magnet.geometric_utils.convexHull_center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.linear_constrained_least_squares.html">magnet.geometric_utils.linear_constrained_least_squares</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.maximum_sq_distance.html">magnet.geometric_utils.maximum_sq_distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.polygon_area_vector.html">magnet.geometric_utils.polygon_area_vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.polygon_centroid.html">magnet.geometric_utils.polygon_centroid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.project.html">magnet.geometric_utils.project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.shoelace_formula.html">magnet.geometric_utils.shoelace_formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.tetrahedron_center.html">magnet.geometric_utils.tetrahedron_center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.geometric_utils.tetrahedron_volume.html">magnet.geometric_utils.tetrahedron_volume</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="magnet.graph_utils.html">magnet.graph_utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.ENC_multiple.html">magnet.graph_utils.ENC_multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.align_to_x_axis.html">magnet.graph_utils.align_to_x_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.cut.html">magnet.graph_utils.cut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.expected_normalized_cut.html">magnet.graph_utils.expected_normalized_cut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.loss_heterogeneous_domains.html">magnet.graph_utils.loss_heterogeneous_domains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.neighbours.html">magnet.graph_utils.neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.normalized_cut.html">magnet.graph_utils.normalized_cut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.randomrotate.html">magnet.graph_utils.randomrotate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="magnet.graph_utils.volumes.html">magnet.graph_utils.volumes</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../manual.html" class="nav-link">Magnet</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="magnet.aggmodels.html" class="nav-link">magnet.aggmodels</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="magnet.aggmodels.sageheterogeneous.html" class="nav-link">magnet.aggmodels.sageheterogeneous</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">magnet.aggmodels.sageheterogeneous.GNNHeterogeneous</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="magnet-aggmodels-sageheterogeneous-gnnheterogeneous">
+<h1>magnet.aggmodels.sageheterogeneous.GNNHeterogeneous<a class="headerlink" href="#magnet-aggmodels-sageheterogeneous-gnnheterogeneous" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">magnet.aggmodels.sageheterogeneous.</span></span><span class="sig-name descname"><span class="pre">GNNHeterogeneous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="magnet.aggmodels.gnn.GeometricGNN.html#magnet.aggmodels.gnn.GeometricGNN" title="magnet.aggmodels.gnn.GeometricGNN"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometricGNN</span></code></a></p>
+<p>Abstract base class for GNNs for agglomerating heterogeneous meshes.</p>
+<p class="rubric">Constructor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.get_sample" title="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.get_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sample</span></code></a>(mesh[, randomRotate, selfloop, ...])</p></td>
+<td><p>Returns a graph data structure sample for training.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.loss_function" title="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.loss_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loss_function</span></code></a>(y, graph[, coeff])</p></td>
+<td><p>Loss function used during training.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.normalize" title="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>(x, edge_index)</p></td>
+<td><p>Normalize the data before feeding it to the GNN.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.get_sample">
+<span class="sig-name descname"><span class="pre">get_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="magnet.mesh.Mesh.html#magnet.mesh.Mesh" title="magnet.mesh.Mesh"><span class="pre">Mesh</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">randomRotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selfloop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Data</span></span></span><a class="headerlink" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.get_sample" title="Link to this definition">#</a></dt>
+<dd><p>Returns a graph data structure sample for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<a class="reference internal" href="magnet.mesh.Mesh.html#magnet.mesh.Mesh" title="magnet.mesh.Mesh"><em>Mesh</em></a>) – Heterogeneous mesh to be sampled.</p></li>
+<li><p><strong>randomRotate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, randomly rotate the mesh (default is <cite>False</cite>).</p></li>
+<li><p><strong>selfloop</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, add 1 on the diagonal of the adjacency matrix, i.e
+self-loops on the graph (default is <cite>False</cite>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>graph data representing the mesh.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.loss_function">
+<span class="sig-name descname"><span class="pre">loss_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="headerlink" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.loss_function" title="Link to this definition">#</a></dt>
+<dd><p>Loss function used during training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>torch.Tensor</em>) – Evaluation output of the Neural Network.</p></li>
+<li><p><strong>graph</strong> (<em>Data</em>) – Graph on which the GNN was evaluated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of the loss function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The loss function may be overridden in subclasses to customize the GNN.
+See the <cite>losses</cite> module for the actual definitions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="headerlink" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.normalize" title="Link to this definition">#</a></dt>
+<dd><p>Normalize the data before feeding it to the GNN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – The data to be normalized.</p></li>
+<li><p><strong>edge_index</strong> (<em>torch.Tensor</em>) – Edge index tensor equivalent to the adjacency matrix of the mesh.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The normalized data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Overridden implementation of <cite>GNN._normalize</cite> to also handle the
+physical group, which is averaged across neighbours to avoid
+discontinuities that may hamper the GNN learning.</p>
+</dd></dl>
+
+<p class="rubric">Inherited Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.__init__" title="magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">agglomerate</span></code>(mesh[, mode, nref, mult_factor])</p></td>
+<td><p>Agglomerate a mesh.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">agglomerate_dataset</span></code>(dataset, **kwargs)</p></td>
+<td><p>Agglomerate all meshes in a dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bisect</span></code>(mesh)</p></td>
+<td><p>Bisect the mesh once.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bisection_Nref</span></code>(mesh, Nref[, warm_start])</p></td>
+<td><p>Bisect the mesh recursively a set number of times.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bisection_mult_factor</span></code>(mesh, mult_factor[, ...])</p></td>
+<td><p>Bisect a mesh until the agglomerated elements are small enough.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bisection_segregated</span></code>(mesh, mult_factor[, subset])</p></td>
+<td><p>Bisect heterogeneous mesh until elements are small enough.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">coarsen</span></code>(mesh, subset[, mode, nref, mult_factor])</p></td>
+<td><p>Coarsen a subregion of the mesh.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_number_of_parameters</span></code>()</p></td>
+<td><p>Get total number of parameters of the GNN.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_model</span></code>(model_path)</p></td>
+<td><p>Load model from state dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">multilevel_bisection</span></code>(mesh[, refiner, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_model</span></code>(output_path)</p></td>
+<td><p>Save current model to state dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_GNN</span></code>(training_dataset, ...[, ...])</p></td>
+<td><p>Train the Graph Neural Network.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This class inherits from <code class="docutils literal notranslate"><span class="pre">torch.nn.Module</span></code>. To see the full list of inherited members,
+please see the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">Pytorch documentation</a>.</p>
+</div>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="magnet.aggmodels.sageheterogeneous.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">magnet.aggmodels.sageheterogeneous</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="magnet.aggmodels.sageheterogeneous.SageHeterogeneous.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">magnet.aggmodels.sageheterogeneous.SageHeterogeneous</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous"><code class="docutils literal notranslate"><span class="pre">GNNHeterogeneous</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.__init__"><code class="docutils literal notranslate"><span class="pre">GNNHeterogeneous.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.get_sample"><code class="docutils literal notranslate"><span class="pre">GNNHeterogeneous.get_sample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.loss_function"><code class="docutils literal notranslate"><span class="pre">GNNHeterogeneous.loss_function()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.normalize"><code class="docutils literal notranslate"><span class="pre">GNNHeterogeneous.normalize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_autosummary/magnet.aggmodels.sageheterogeneous.GNNHeterogeneous.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Magnet Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

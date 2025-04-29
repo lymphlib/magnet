@@ -1,0 +1,6 @@
+magnet.graph\_utils.align\_to\_x\_axis
+======================================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: align_to_x_axis

@@ -1,0 +1,6 @@
+magnet.graph\_utils.expected\_normalized\_cut
+=============================================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: expected_normalized_cut

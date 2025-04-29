@@ -1,0 +1,6 @@
+magnet.generate.structured\_quads
+=================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: structured_quads

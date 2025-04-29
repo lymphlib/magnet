@@ -1,0 +1,6 @@
+magnet.io.create\_dataset
+=========================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: create_dataset

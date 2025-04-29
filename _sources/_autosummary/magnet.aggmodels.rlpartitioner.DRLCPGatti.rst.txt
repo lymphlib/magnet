@@ -1,0 +1,69 @@
+magnet.aggmodels.rlpartitioner.DRLCPGatti
+=========================================
+
+.. currentmodule:: magnet.aggmodels.rlpartitioner
+
+.. autoclass:: DRLCPGatti        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DRLCPGatti.__init__
+      ~DRLCPGatti.forward
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: DRLCPGatti.__init__
+   .. automethod:: DRLCPGatti.forward
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~DRLCPGatti.A2C_train
+      ~DRLCPGatti.ac_eval
+      ~DRLCPGatti.agglomerate
+      ~DRLCPGatti.agglomerate_dataset
+      ~DRLCPGatti.bisect
+      ~DRLCPGatti.bisection_Nref
+      ~DRLCPGatti.bisection_mult_factor
+      ~DRLCPGatti.bisection_segregated
+      ~DRLCPGatti.change_vert
+      ~DRLCPGatti.coarsen
+      ~DRLCPGatti.compute_episode_length
+      ~DRLCPGatti.cut
+      ~DRLCPGatti.get_number_of_parameters
+      ~DRLCPGatti.get_sample
+      ~DRLCPGatti.load_model
+      ~DRLCPGatti.loss_function
+      ~DRLCPGatti.multi_eval
+      ~DRLCPGatti.multilevel_bisection
+      ~DRLCPGatti.normalize
+      ~DRLCPGatti.reward_function
+      ~DRLCPGatti.save_model
+      ~DRLCPGatti.train_GNN
+      ~DRLCPGatti.update_state
+      ~DRLCPGatti.volumes
+   
+   
+   
+
+   

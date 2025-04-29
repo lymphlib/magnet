@@ -1,0 +1,6 @@
+magnet.graph\_utils.cut
+=======================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: cut

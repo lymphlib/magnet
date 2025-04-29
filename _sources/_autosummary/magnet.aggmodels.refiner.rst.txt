@@ -1,0 +1,33 @@
+magnet.aggmodels.refiner
+========================
+
+.. automodule:: magnet.aggmodels.refiner
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      DRLRefiner
+      RefGatti
+      Reyyy
+   
+   
+
+   
+   
+   
+
+
+

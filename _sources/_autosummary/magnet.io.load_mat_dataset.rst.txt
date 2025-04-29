@@ -1,0 +1,6 @@
+magnet.io.load\_mat\_dataset
+============================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: load_mat_dataset

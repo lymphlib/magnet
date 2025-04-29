@@ -1,0 +1,48 @@
+﻿magnet.generate
+===============
+
+.. automodule:: magnet.generate
+  
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      circular_holes
+      circular_inclusions
+      dataset_2D
+      dataset_2D_hetero
+      dataset_3D
+      delaunay_tria
+      double_circle
+      generate_Heterogeneous_cube
+      generate_cube
+      generate_cube_portion
+      generate_dataset_heterogeneous
+      heterogeneous_square
+      holed_square
+      mixed_tets_hexa
+      structured_quads
+      structured_tria
+      tetrahedra_from_stl
+      view_using_gmsh_fltk
+      voronoi_tess
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

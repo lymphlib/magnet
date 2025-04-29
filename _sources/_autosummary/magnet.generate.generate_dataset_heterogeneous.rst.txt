@@ -1,0 +1,6 @@
+magnet.generate.generate\_dataset\_heterogeneous
+================================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: generate_dataset_heterogeneous

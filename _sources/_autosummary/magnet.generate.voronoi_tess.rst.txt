@@ -1,0 +1,6 @@
+magnet.generate.voronoi\_tess
+=============================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: voronoi_tess

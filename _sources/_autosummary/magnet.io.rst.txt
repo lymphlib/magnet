@@ -1,0 +1,38 @@
+﻿magnet.io
+=========
+
+.. automodule:: magnet.io
+  
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      create_dataset
+      exploded_view
+      extract_boundary
+      load_dataset
+      load_graph_dataset
+      load_mat_dataset
+      load_mesh
+      save_graph
+      save_mesh
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,52 @@
+magnet.aggmodels.metis.METIS
+============================
+
+.. currentmodule:: magnet.aggmodels.metis
+
+.. autoclass:: METIS        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~METIS.direct_k_way
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: METIS.direct_k_way
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~METIS.__init__
+      ~METIS.agglomerate
+      ~METIS.agglomerate_dataset
+      ~METIS.bisect
+      ~METIS.bisection_Nref
+      ~METIS.bisection_mult_factor
+      ~METIS.bisection_segregated
+      ~METIS.coarsen
+      ~METIS.multilevel_bisection
+   
+   
+   
+
+   

@@ -1,0 +1,51 @@
+magnet.mesh.AggMeshDataset
+==========================
+
+.. currentmodule:: magnet.mesh
+
+.. autoclass:: AggMeshDataset        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AggMeshDataset.__init__
+      ~AggMeshDataset.compare_quality
+      ~AggMeshDataset.compute_quality_metrics
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: AggMeshDataset.__init__
+   .. automethod:: AggMeshDataset.compare_quality
+   .. automethod:: AggMeshDataset.compute_quality_metrics
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~AggMeshDataset.add_mesh
+      ~AggMeshDataset.count
+      ~AggMeshDataset.index
+      ~AggMeshDataset.merge
+   
+   
+   
+
+   

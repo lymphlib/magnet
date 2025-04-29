@@ -1,0 +1,42 @@
+magnet.mesh.Mesh
+================
+
+.. currentmodule:: magnet.mesh
+
+.. autoclass:: Mesh        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Mesh.__init__
+      ~Mesh.subgraph
+      ~Mesh.visualize_as_graph
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Mesh.__init__
+   .. automethod:: Mesh.subgraph
+   .. automethod:: Mesh.visualize_as_graph
+   
+   
+   
+
+
+   
+   
+   
+   
+
+   

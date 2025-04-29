@@ -1,0 +1,44 @@
+magnet.cell.Cell
+================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Cell        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Cell.__init__
+      ~Cell.inscribed_diameter
+      ~Cell.is_inside
+      ~Cell.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Cell.__init__
+   .. automethod:: Cell.inscribed_diameter
+   .. automethod:: Cell.is_inside
+   .. automethod:: Cell.volume_center
+   
+   
+   
+
+
+   
+   
+   
+   
+
+   

@@ -1,0 +1,6 @@
+magnet.geometric\_utils.polygon\_centroid
+=========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: polygon_centroid

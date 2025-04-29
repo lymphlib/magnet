@@ -1,0 +1,6 @@
+magnet.generate.circular\_inclusions
+====================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: circular_inclusions

@@ -1,0 +1,6 @@
+magnet.geometric\_utils.convexHull\_center
+==========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: convexHull_center

@@ -1,0 +1,41 @@
+﻿magnet.geometric\_utils
+=======================
+
+.. automodule:: magnet.geometric_utils
+  
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      closest_to_face
+      closest_to_segment
+      closest_to_triangle
+      convexHull_center
+      linear_constrained_least_squares
+      maximum_sq_distance
+      polygon_area_vector
+      polygon_centroid
+      project
+      shoelace_formula
+      tetrahedron_center
+      tetrahedron_volume
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

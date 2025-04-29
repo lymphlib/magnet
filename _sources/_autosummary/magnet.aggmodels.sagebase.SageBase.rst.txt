@@ -1,0 +1,63 @@
+magnet.aggmodels.sagebase.SageBase
+==================================
+
+.. currentmodule:: magnet.aggmodels.sagebase
+
+.. autoclass:: SageBase        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SageBase.__init__
+      ~SageBase.forward
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: SageBase.__init__
+   .. automethod:: SageBase.forward
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~SageBase.agglomerate
+      ~SageBase.agglomerate_dataset
+      ~SageBase.bisect
+      ~SageBase.bisection_Nref
+      ~SageBase.bisection_mult_factor
+      ~SageBase.bisection_segregated
+      ~SageBase.coarsen
+      ~SageBase.get_number_of_parameters
+      ~SageBase.get_sample
+      ~SageBase.load_model
+      ~SageBase.loss_function
+      ~SageBase.multilevel_bisection
+      ~SageBase.normalize
+      ~SageBase.save_model
+      ~SageBase.train_GNN
+   
+   
+   
+   .. note::
+      This class inherits from ``torch.nn.Module``. To see the full list of inherited members,
+      please see the `Pytorch documentation <https://pytorch.org/docs/stable/generated/torch.nn.Module.html>`_.
+
+   

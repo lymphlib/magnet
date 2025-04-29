@@ -1,0 +1,48 @@
+magnet.cell.Hexahedron
+======================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Hexahedron        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Hexahedron.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Hexahedron.volume_center
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Hexahedron.__init__
+      ~Hexahedron.inscribed_diameter
+      ~Hexahedron.is_inside
+      ~Hexahedron.surface_area
+      ~Hexahedron.volume
+   
+   
+   
+
+   

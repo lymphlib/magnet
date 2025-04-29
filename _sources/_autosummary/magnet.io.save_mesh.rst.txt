@@ -1,0 +1,6 @@
+magnet.io.save\_mesh
+====================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: save_mesh

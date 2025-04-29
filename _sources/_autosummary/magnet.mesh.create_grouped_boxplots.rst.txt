@@ -1,0 +1,6 @@
+magnet.mesh.create\_grouped\_boxplots
+=====================================
+
+.. currentmodule:: magnet.mesh
+
+.. autofunction:: create_grouped_boxplots

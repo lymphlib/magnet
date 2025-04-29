@@ -1,0 +1,50 @@
+magnet.cell.Quad
+================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Quad        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+   
+   
+
+   
+   
+   
+   
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Quad.__init__
+      ~Quad.area
+      ~Quad.centroid
+      ~Quad.inscribed_diameter
+      ~Quad.is_counterclockwise
+      ~Quad.is_inside
+      ~Quad.perimeter
+      ~Quad.sort_nodes
+      ~Quad.volume_center
+   
+   
+   
+
+   

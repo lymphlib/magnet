@@ -1,0 +1,49 @@
+magnet.mesh.MeshDataset
+=======================
+
+.. currentmodule:: magnet.mesh
+
+.. autoclass:: MeshDataset        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MeshDataset.__init__
+      ~MeshDataset.add_mesh
+      ~MeshDataset.merge
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: MeshDataset.__init__
+   .. automethod:: MeshDataset.add_mesh
+   .. automethod:: MeshDataset.merge
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~MeshDataset.count
+      ~MeshDataset.index
+   
+   
+   
+
+   

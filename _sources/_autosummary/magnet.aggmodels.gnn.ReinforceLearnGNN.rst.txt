@@ -1,0 +1,67 @@
+magnet.aggmodels.gnn.ReinforceLearnGNN
+======================================
+
+.. currentmodule:: magnet.aggmodels.gnn
+
+.. autoclass:: ReinforceLearnGNN        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ReinforceLearnGNN.A2C_train
+      ~ReinforceLearnGNN.change_vert
+      ~ReinforceLearnGNN.compute_episode_length
+      ~ReinforceLearnGNN.reward_function
+      ~ReinforceLearnGNN.update_state
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: ReinforceLearnGNN.A2C_train
+   .. automethod:: ReinforceLearnGNN.change_vert
+   .. automethod:: ReinforceLearnGNN.compute_episode_length
+   .. automethod:: ReinforceLearnGNN.reward_function
+   .. automethod:: ReinforceLearnGNN.update_state
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~ReinforceLearnGNN.__init__
+      ~ReinforceLearnGNN.agglomerate
+      ~ReinforceLearnGNN.agglomerate_dataset
+      ~ReinforceLearnGNN.bisect
+      ~ReinforceLearnGNN.bisection_Nref
+      ~ReinforceLearnGNN.bisection_mult_factor
+      ~ReinforceLearnGNN.bisection_segregated
+      ~ReinforceLearnGNN.coarsen
+      ~ReinforceLearnGNN.get_number_of_parameters
+      ~ReinforceLearnGNN.get_sample
+      ~ReinforceLearnGNN.load_model
+      ~ReinforceLearnGNN.loss_function
+      ~ReinforceLearnGNN.multilevel_bisection
+      ~ReinforceLearnGNN.normalize
+      ~ReinforceLearnGNN.save_model
+      ~ReinforceLearnGNN.train_GNN
+   
+   
+   
+
+   

@@ -1,0 +1,6 @@
+magnet.graph\_utils.neighbours
+==============================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: neighbours

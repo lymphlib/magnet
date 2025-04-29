@@ -1,0 +1,38 @@
+magnet.mesh.Boundary
+====================
+
+.. currentmodule:: magnet.mesh
+
+.. autoclass:: Boundary        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Boundary.__init__
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Boundary.__init__
+   
+   
+   
+
+
+   
+   
+   
+   
+
+   

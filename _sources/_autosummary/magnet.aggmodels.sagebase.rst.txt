@@ -1,0 +1,33 @@
+magnet.aggmodels.sagebase
+=========================
+
+.. automodule:: magnet.aggmodels.sagebase
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      SageBase
+      SageBase2D
+      SageRes
+   
+   
+
+   
+   
+   
+
+
+

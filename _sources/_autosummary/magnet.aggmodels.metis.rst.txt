@@ -1,0 +1,31 @@
+magnet.aggmodels.metis
+======================
+
+.. automodule:: magnet.aggmodels.metis
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      METIS
+   
+   
+
+   
+   
+   
+
+
+

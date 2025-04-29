@@ -1,0 +1,6 @@
+magnet.generate.holed\_square
+=============================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: holed_square

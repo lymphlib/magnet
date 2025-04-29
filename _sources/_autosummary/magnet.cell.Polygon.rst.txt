@@ -1,0 +1,58 @@
+magnet.cell.Polygon
+===================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Polygon        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Polygon.area
+      ~Polygon.centroid
+      ~Polygon.inscribed_diameter
+      ~Polygon.is_counterclockwise
+      ~Polygon.is_inside
+      ~Polygon.perimeter
+      ~Polygon.sort_nodes
+      ~Polygon.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Polygon.area
+   .. automethod:: Polygon.centroid
+   .. automethod:: Polygon.inscribed_diameter
+   .. automethod:: Polygon.is_counterclockwise
+   .. automethod:: Polygon.is_inside
+   .. automethod:: Polygon.perimeter
+   .. automethod:: Polygon.sort_nodes
+   .. automethod:: Polygon.volume_center
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Polygon.__init__
+   
+   
+   
+
+   

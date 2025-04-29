@@ -1,0 +1,72 @@
+magnet.aggmodels.rlpartitioner.WeakContigDRLCP
+==============================================
+
+.. currentmodule:: magnet.aggmodels.rlpartitioner
+
+.. autoclass:: WeakContigDRLCP        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WeakContigDRLCP.__init__
+      ~WeakContigDRLCP.forward
+      ~WeakContigDRLCP.get_sample
+      ~WeakContigDRLCP.normalize
+      ~WeakContigDRLCP.reward_function
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: WeakContigDRLCP.__init__
+   .. automethod:: WeakContigDRLCP.forward
+   .. automethod:: WeakContigDRLCP.get_sample
+   .. automethod:: WeakContigDRLCP.normalize
+   .. automethod:: WeakContigDRLCP.reward_function
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~WeakContigDRLCP.A2C_train
+      ~WeakContigDRLCP.ac_eval
+      ~WeakContigDRLCP.agglomerate
+      ~WeakContigDRLCP.agglomerate_dataset
+      ~WeakContigDRLCP.bisect
+      ~WeakContigDRLCP.bisection_Nref
+      ~WeakContigDRLCP.bisection_mult_factor
+      ~WeakContigDRLCP.bisection_segregated
+      ~WeakContigDRLCP.change_vert
+      ~WeakContigDRLCP.coarsen
+      ~WeakContigDRLCP.compute_episode_length
+      ~WeakContigDRLCP.cut
+      ~WeakContigDRLCP.get_number_of_parameters
+      ~WeakContigDRLCP.load_model
+      ~WeakContigDRLCP.loss_function
+      ~WeakContigDRLCP.multi_eval
+      ~WeakContigDRLCP.multilevel_bisection
+      ~WeakContigDRLCP.save_model
+      ~WeakContigDRLCP.train_GNN
+      ~WeakContigDRLCP.update_state
+      ~WeakContigDRLCP.volumes
+   
+   
+   
+
+   

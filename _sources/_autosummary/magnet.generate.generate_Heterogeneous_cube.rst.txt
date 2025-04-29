@@ -1,0 +1,6 @@
+magnet.generate.generate\_Heterogeneous\_cube
+=============================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: generate_Heterogeneous_cube

@@ -1,0 +1,6 @@
+magnet.io.exploded\_view
+========================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: exploded_view

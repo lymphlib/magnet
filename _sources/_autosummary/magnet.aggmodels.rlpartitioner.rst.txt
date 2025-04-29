@@ -1,0 +1,34 @@
+magnet.aggmodels.rlpartitioner
+==============================
+
+.. automodule:: magnet.aggmodels.rlpartitioner
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      ContigDRLCP
+      DRLCPGatti
+      DRLCoarsePartioner
+      WeakContigDRLCP
+   
+   
+
+   
+   
+   
+
+
+

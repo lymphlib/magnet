@@ -1,0 +1,6 @@
+magnet.generate.tetrahedra\_from\_stl
+=====================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: tetrahedra_from_stl

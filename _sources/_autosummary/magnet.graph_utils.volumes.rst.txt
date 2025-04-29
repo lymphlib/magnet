@@ -1,0 +1,6 @@
+magnet.graph\_utils.volumes
+===========================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: volumes

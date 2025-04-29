@@ -1,0 +1,53 @@
+magnet.aggmodels.gnn.GNN
+========================
+
+.. currentmodule:: magnet.aggmodels.gnn
+
+.. autoclass:: GNN        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GNN.get_number_of_parameters
+      ~GNN.get_sample
+      ~GNN.load_model
+      ~GNN.save_model
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: GNN.get_number_of_parameters
+   .. automethod:: GNN.get_sample
+   .. automethod:: GNN.load_model
+   .. automethod:: GNN.save_model
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~GNN.__init__
+   
+   
+   
+   .. note::
+      This class inherits from ``torch.nn.Module``. To see the full list of inherited members,
+      please see the `Pytorch documentation <https://pytorch.org/docs/stable/generated/torch.nn.Module.html>`_.
+
+   

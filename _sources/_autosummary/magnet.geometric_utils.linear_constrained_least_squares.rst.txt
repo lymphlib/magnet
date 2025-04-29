@@ -1,0 +1,6 @@
+magnet.geometric\_utils.linear\_constrained\_least\_squares
+===========================================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: linear_constrained_least_squares

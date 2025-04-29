@@ -1,0 +1,6 @@
+magnet.generate.structured\_tria
+================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: structured_tria

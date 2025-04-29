@@ -1,0 +1,52 @@
+magnet.cell.Triangle
+====================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Triangle        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Triangle.area
+      ~Triangle.centroid
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Triangle.area
+   .. automethod:: Triangle.centroid
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Triangle.__init__
+      ~Triangle.inscribed_diameter
+      ~Triangle.is_counterclockwise
+      ~Triangle.is_inside
+      ~Triangle.perimeter
+      ~Triangle.sort_nodes
+      ~Triangle.volume_center
+   
+   
+   
+
+   

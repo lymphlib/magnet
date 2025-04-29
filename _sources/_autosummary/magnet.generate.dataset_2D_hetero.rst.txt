@@ -1,0 +1,6 @@
+magnet.generate.dataset\_2D\_hetero
+===================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: dataset_2D_hetero

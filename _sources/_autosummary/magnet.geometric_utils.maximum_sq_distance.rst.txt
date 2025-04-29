@@ -1,0 +1,6 @@
+magnet.geometric\_utils.maximum\_sq\_distance
+=============================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: maximum_sq_distance

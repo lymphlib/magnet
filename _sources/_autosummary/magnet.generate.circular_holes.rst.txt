@@ -1,0 +1,6 @@
+magnet.generate.circular\_holes
+===============================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: circular_holes

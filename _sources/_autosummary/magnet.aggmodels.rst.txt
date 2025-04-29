@@ -1,0 +1,38 @@
+﻿magnet.aggmodels
+================
+
+.. automodule:: magnet.aggmodels
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   gnn
+   kmeans
+   metis
+   refiner
+   rlpartitioner
+   sagebase
+   sageheterogeneous
+

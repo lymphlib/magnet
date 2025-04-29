@@ -1,0 +1,74 @@
+magnet.aggmodels.rlpartitioner.DRLCoarsePartioner
+=================================================
+
+.. currentmodule:: magnet.aggmodels.rlpartitioner
+
+.. autoclass:: DRLCoarsePartioner        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DRLCoarsePartioner.ac_eval
+      ~DRLCoarsePartioner.compute_episode_length
+      ~DRLCoarsePartioner.cut
+      ~DRLCoarsePartioner.get_sample
+      ~DRLCoarsePartioner.multi_eval
+      ~DRLCoarsePartioner.reward_function
+      ~DRLCoarsePartioner.update_state
+      ~DRLCoarsePartioner.volumes
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: DRLCoarsePartioner.ac_eval
+   .. automethod:: DRLCoarsePartioner.compute_episode_length
+   .. automethod:: DRLCoarsePartioner.cut
+   .. automethod:: DRLCoarsePartioner.get_sample
+   .. automethod:: DRLCoarsePartioner.multi_eval
+   .. automethod:: DRLCoarsePartioner.reward_function
+   .. automethod:: DRLCoarsePartioner.update_state
+   .. automethod:: DRLCoarsePartioner.volumes
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~DRLCoarsePartioner.A2C_train
+      ~DRLCoarsePartioner.__init__
+      ~DRLCoarsePartioner.agglomerate
+      ~DRLCoarsePartioner.agglomerate_dataset
+      ~DRLCoarsePartioner.bisect
+      ~DRLCoarsePartioner.bisection_Nref
+      ~DRLCoarsePartioner.bisection_mult_factor
+      ~DRLCoarsePartioner.bisection_segregated
+      ~DRLCoarsePartioner.change_vert
+      ~DRLCoarsePartioner.coarsen
+      ~DRLCoarsePartioner.get_number_of_parameters
+      ~DRLCoarsePartioner.load_model
+      ~DRLCoarsePartioner.loss_function
+      ~DRLCoarsePartioner.multilevel_bisection
+      ~DRLCoarsePartioner.normalize
+      ~DRLCoarsePartioner.save_model
+      ~DRLCoarsePartioner.train_GNN
+   
+   
+   
+
+   

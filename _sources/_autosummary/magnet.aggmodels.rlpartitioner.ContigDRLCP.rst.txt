@@ -1,0 +1,70 @@
+magnet.aggmodels.rlpartitioner.ContigDRLCP
+==========================================
+
+.. currentmodule:: magnet.aggmodels.rlpartitioner
+
+.. autoclass:: ContigDRLCP        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ContigDRLCP.forward
+      ~ContigDRLCP.get_sample
+      ~ContigDRLCP.update_state
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: ContigDRLCP.forward
+   .. automethod:: ContigDRLCP.get_sample
+   .. automethod:: ContigDRLCP.update_state
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~ContigDRLCP.A2C_train
+      ~ContigDRLCP.__init__
+      ~ContigDRLCP.ac_eval
+      ~ContigDRLCP.agglomerate
+      ~ContigDRLCP.agglomerate_dataset
+      ~ContigDRLCP.bisect
+      ~ContigDRLCP.bisection_Nref
+      ~ContigDRLCP.bisection_mult_factor
+      ~ContigDRLCP.bisection_segregated
+      ~ContigDRLCP.change_vert
+      ~ContigDRLCP.coarsen
+      ~ContigDRLCP.compute_episode_length
+      ~ContigDRLCP.cut
+      ~ContigDRLCP.get_number_of_parameters
+      ~ContigDRLCP.load_model
+      ~ContigDRLCP.loss_function
+      ~ContigDRLCP.multi_eval
+      ~ContigDRLCP.multilevel_bisection
+      ~ContigDRLCP.normalize
+      ~ContigDRLCP.reward_function
+      ~ContigDRLCP.save_model
+      ~ContigDRLCP.train_GNN
+      ~ContigDRLCP.volumes
+   
+   
+   
+
+   

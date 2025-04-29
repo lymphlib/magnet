@@ -1,0 +1,61 @@
+magnet.aggmodels.gnn.GeometricGNN
+=================================
+
+.. currentmodule:: magnet.aggmodels.gnn
+
+.. autoclass:: GeometricGNN        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GeometricGNN.get_sample
+      ~GeometricGNN.loss_function
+      ~GeometricGNN.normalize
+      ~GeometricGNN.train_GNN
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: GeometricGNN.get_sample
+   .. automethod:: GeometricGNN.loss_function
+   .. automethod:: GeometricGNN.normalize
+   .. automethod:: GeometricGNN.train_GNN
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~GeometricGNN.__init__
+      ~GeometricGNN.agglomerate
+      ~GeometricGNN.agglomerate_dataset
+      ~GeometricGNN.bisect
+      ~GeometricGNN.bisection_Nref
+      ~GeometricGNN.bisection_mult_factor
+      ~GeometricGNN.bisection_segregated
+      ~GeometricGNN.coarsen
+      ~GeometricGNN.get_number_of_parameters
+      ~GeometricGNN.load_model
+      ~GeometricGNN.multilevel_bisection
+      ~GeometricGNN.save_model
+   
+   
+   
+
+   

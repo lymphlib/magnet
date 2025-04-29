@@ -1,0 +1,63 @@
+magnet.mesh.AggMesh
+===================
+
+.. currentmodule:: magnet.mesh
+
+.. autoclass:: AggMesh        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AggMesh.__init__
+      ~AggMesh.area_perimeter_ratio
+      ~AggMesh.circle_ratio
+      ~AggMesh.get_mean_quality_metrics
+      ~AggMesh.get_quality_metrics
+      ~AggMesh.mesh_elements_sizes
+      ~AggMesh.non_homogeneous_fraction
+      ~AggMesh.uniformity_factor
+      ~AggMesh.view
+      ~AggMesh.volumes_difference
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: AggMesh.__init__
+   .. automethod:: AggMesh.area_perimeter_ratio
+   .. automethod:: AggMesh.circle_ratio
+   .. automethod:: AggMesh.get_mean_quality_metrics
+   .. automethod:: AggMesh.get_quality_metrics
+   .. automethod:: AggMesh.mesh_elements_sizes
+   .. automethod:: AggMesh.non_homogeneous_fraction
+   .. automethod:: AggMesh.uniformity_factor
+   .. automethod:: AggMesh.view
+   .. automethod:: AggMesh.volumes_difference
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~AggMesh.subgraph
+      ~AggMesh.visualize_as_graph
+   
+   
+   
+
+   

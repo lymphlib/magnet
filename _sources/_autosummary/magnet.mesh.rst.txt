@@ -1,0 +1,42 @@
+﻿magnet.mesh
+===========
+
+.. automodule:: magnet.mesh
+  
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      create_grouped_boxplots
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      AggMesh
+      AggMeshDataset
+      Boundary
+      Mesh
+      MeshDataset
+   
+   
+
+   
+   
+   
+
+
+

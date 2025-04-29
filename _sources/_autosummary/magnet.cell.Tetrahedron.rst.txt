@@ -1,0 +1,51 @@
+magnet.cell.Tetrahedron
+=======================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Tetrahedron        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Tetrahedron.centroid
+      ~Tetrahedron.volume
+      ~Tetrahedron.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Tetrahedron.centroid
+   .. automethod:: Tetrahedron.volume
+   .. automethod:: Tetrahedron.volume_center
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Tetrahedron.__init__
+      ~Tetrahedron.inscribed_diameter
+      ~Tetrahedron.is_inside
+      ~Tetrahedron.surface_area
+   
+   
+   
+
+   

@@ -1,0 +1,63 @@
+magnet.aggmodels.sageheterogeneous.SageHeterogeneous
+====================================================
+
+.. currentmodule:: magnet.aggmodels.sageheterogeneous
+
+.. autoclass:: SageHeterogeneous        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SageHeterogeneous.__init__
+      ~SageHeterogeneous.forward
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: SageHeterogeneous.__init__
+   .. automethod:: SageHeterogeneous.forward
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~SageHeterogeneous.agglomerate
+      ~SageHeterogeneous.agglomerate_dataset
+      ~SageHeterogeneous.bisect
+      ~SageHeterogeneous.bisection_Nref
+      ~SageHeterogeneous.bisection_mult_factor
+      ~SageHeterogeneous.bisection_segregated
+      ~SageHeterogeneous.coarsen
+      ~SageHeterogeneous.get_number_of_parameters
+      ~SageHeterogeneous.get_sample
+      ~SageHeterogeneous.load_model
+      ~SageHeterogeneous.loss_function
+      ~SageHeterogeneous.multilevel_bisection
+      ~SageHeterogeneous.normalize
+      ~SageHeterogeneous.save_model
+      ~SageHeterogeneous.train_GNN
+   
+   
+   
+   .. note::
+      This class inherits from ``torch.nn.Module``. To see the full list of inherited members,
+      please see the `Pytorch documentation <https://pytorch.org/docs/stable/generated/torch.nn.Module.html>`_.
+
+   

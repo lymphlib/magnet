@@ -1,0 +1,6 @@
+magnet.geometric\_utils.tetrahedron\_center
+===========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: tetrahedron_center

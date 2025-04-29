@@ -1,0 +1,38 @@
+﻿magnet.cell
+===========
+
+.. automodule:: magnet.cell
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      Cell
+      Hexahedron
+      Polygon
+      Polyhedron
+      Pyramid
+      Quad
+      Tetrahedron
+      Triangle
+   
+   
+
+   
+   
+   
+
+
+

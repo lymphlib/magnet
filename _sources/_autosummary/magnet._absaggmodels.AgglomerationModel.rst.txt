@@ -1,0 +1,58 @@
+magnet.\_absaggmodels.AgglomerationModel
+========================================
+
+.. currentmodule:: magnet._absaggmodels
+
+.. autoclass:: AgglomerationModel        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AgglomerationModel.agglomerate
+      ~AgglomerationModel.agglomerate_dataset
+      ~AgglomerationModel.bisect
+      ~AgglomerationModel.bisection_Nref
+      ~AgglomerationModel.bisection_mult_factor
+      ~AgglomerationModel.bisection_segregated
+      ~AgglomerationModel.coarsen
+      ~AgglomerationModel.multilevel_bisection
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: AgglomerationModel.agglomerate
+   .. automethod:: AgglomerationModel.agglomerate_dataset
+   .. automethod:: AgglomerationModel.bisect
+   .. automethod:: AgglomerationModel.bisection_Nref
+   .. automethod:: AgglomerationModel.bisection_mult_factor
+   .. automethod:: AgglomerationModel.bisection_segregated
+   .. automethod:: AgglomerationModel.coarsen
+   .. automethod:: AgglomerationModel.multilevel_bisection
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~AgglomerationModel.__init__
+   
+   
+   
+
+   

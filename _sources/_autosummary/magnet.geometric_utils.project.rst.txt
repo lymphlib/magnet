@@ -1,0 +1,6 @@
+magnet.geometric\_utils.project
+===============================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: project

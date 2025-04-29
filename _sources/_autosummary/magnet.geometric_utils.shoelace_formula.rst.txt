@@ -1,0 +1,6 @@
+magnet.geometric\_utils.shoelace\_formula
+=========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: shoelace_formula

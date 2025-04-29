@@ -1,0 +1,6 @@
+magnet.generate.mixed\_tets\_hexa
+=================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: mixed_tets_hexa

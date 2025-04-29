@@ -1,0 +1,52 @@
+magnet.aggmodels.kmeans.KMEANS
+==============================
+
+.. currentmodule:: magnet.aggmodels.kmeans
+
+.. autoclass:: KMEANS        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~KMEANS.direct_k_way
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: KMEANS.direct_k_way
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~KMEANS.__init__
+      ~KMEANS.agglomerate
+      ~KMEANS.agglomerate_dataset
+      ~KMEANS.bisect
+      ~KMEANS.bisection_Nref
+      ~KMEANS.bisection_mult_factor
+      ~KMEANS.bisection_segregated
+      ~KMEANS.coarsen
+      ~KMEANS.multilevel_bisection
+   
+   
+   
+
+   

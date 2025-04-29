@@ -1,0 +1,6 @@
+magnet.geometric\_utils.closest\_to\_face
+=========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: closest_to_face

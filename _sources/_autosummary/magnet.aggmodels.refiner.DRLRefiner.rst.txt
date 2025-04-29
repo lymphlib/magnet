@@ -1,0 +1,75 @@
+magnet.aggmodels.refiner.DRLRefiner
+===================================
+
+.. currentmodule:: magnet.aggmodels.refiner
+
+.. autoclass:: DRLRefiner        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DRLRefiner.A2C_train
+      ~DRLRefiner.compute_episode_length
+      ~DRLRefiner.cut
+      ~DRLRefiner.get_sample
+      ~DRLRefiner.k_hop_graph_cut
+      ~DRLRefiner.objective
+      ~DRLRefiner.reward_function
+      ~DRLRefiner.update_state
+      ~DRLRefiner.volumes
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: DRLRefiner.A2C_train
+   .. automethod:: DRLRefiner.compute_episode_length
+   .. automethod:: DRLRefiner.cut
+   .. automethod:: DRLRefiner.get_sample
+   .. automethod:: DRLRefiner.k_hop_graph_cut
+   .. automethod:: DRLRefiner.objective
+   .. automethod:: DRLRefiner.reward_function
+   .. automethod:: DRLRefiner.update_state
+   .. automethod:: DRLRefiner.volumes
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~DRLRefiner.__init__
+      ~DRLRefiner.agglomerate
+      ~DRLRefiner.agglomerate_dataset
+      ~DRLRefiner.bisect
+      ~DRLRefiner.bisection_Nref
+      ~DRLRefiner.bisection_mult_factor
+      ~DRLRefiner.bisection_segregated
+      ~DRLRefiner.change_vert
+      ~DRLRefiner.coarsen
+      ~DRLRefiner.get_number_of_parameters
+      ~DRLRefiner.load_model
+      ~DRLRefiner.loss_function
+      ~DRLRefiner.multilevel_bisection
+      ~DRLRefiner.normalize
+      ~DRLRefiner.save_model
+      ~DRLRefiner.train_GNN
+   
+   
+   
+
+   

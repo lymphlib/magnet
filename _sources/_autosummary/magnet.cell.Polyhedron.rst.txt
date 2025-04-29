@@ -1,0 +1,52 @@
+magnet.cell.Polyhedron
+======================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Polyhedron        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Polyhedron.inscribed_diameter
+      ~Polyhedron.is_inside
+      ~Polyhedron.surface_area
+      ~Polyhedron.volume
+      ~Polyhedron.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Polyhedron.inscribed_diameter
+   .. automethod:: Polyhedron.is_inside
+   .. automethod:: Polyhedron.surface_area
+   .. automethod:: Polyhedron.volume
+   .. automethod:: Polyhedron.volume_center
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Polyhedron.__init__
+   
+   
+   
+
+   

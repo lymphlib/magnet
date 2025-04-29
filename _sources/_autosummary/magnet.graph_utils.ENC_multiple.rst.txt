@@ -1,0 +1,6 @@
+magnet.graph\_utils.ENC\_multiple
+=================================
+
+.. currentmodule:: magnet.graph_utils
+
+.. autofunction:: ENC_multiple

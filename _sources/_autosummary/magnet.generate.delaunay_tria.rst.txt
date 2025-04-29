@@ -1,0 +1,6 @@
+magnet.generate.delaunay\_tria
+==============================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: delaunay_tria

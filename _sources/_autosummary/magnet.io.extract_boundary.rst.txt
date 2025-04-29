@@ -1,0 +1,6 @@
+magnet.io.extract\_boundary
+===========================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: extract_boundary

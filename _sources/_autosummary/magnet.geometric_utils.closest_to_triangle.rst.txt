@@ -1,0 +1,6 @@
+magnet.geometric\_utils.closest\_to\_triangle
+=============================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: closest_to_triangle

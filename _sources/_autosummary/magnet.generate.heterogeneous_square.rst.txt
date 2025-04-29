@@ -1,0 +1,6 @@
+magnet.generate.heterogeneous\_square
+=====================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: heterogeneous_square

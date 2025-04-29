@@ -1,0 +1,6 @@
+magnet.geometric\_utils.tetrahedron\_volume
+===========================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: tetrahedron_volume

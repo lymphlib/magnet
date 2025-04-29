@@ -1,0 +1,48 @@
+magnet.cell.Pyramid
+===================
+
+.. currentmodule:: magnet.cell
+
+.. autoclass:: Pyramid        
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Constructor
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Pyramid.volume_center
+   
+   
+
+   
+   
+   
+   
+   .. automethod:: Pyramid.volume_center
+   
+   
+   
+
+
+   
+   
+   .. rubric:: Inherited Methods
+
+   .. autosummary::
+   
+      ~Pyramid.__init__
+      ~Pyramid.inscribed_diameter
+      ~Pyramid.is_inside
+      ~Pyramid.surface_area
+      ~Pyramid.volume
+   
+   
+   
+
+   

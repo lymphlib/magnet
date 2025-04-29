@@ -1,0 +1,6 @@
+magnet.geometric\_utils.polygon\_area\_vector
+=============================================
+
+.. currentmodule:: magnet.geometric_utils
+
+.. autofunction:: polygon_area_vector

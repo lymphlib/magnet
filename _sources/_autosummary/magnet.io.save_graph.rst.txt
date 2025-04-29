@@ -1,0 +1,6 @@
+magnet.io.save\_graph
+=====================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: save_graph

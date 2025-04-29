@@ -1,0 +1,31 @@
+﻿magnet.\_absaggmodels
+=====================
+
+.. automodule:: magnet._absaggmodels
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst           
+   
+      AgglomerationModel
+   
+   
+
+   
+   
+   
+
+
+

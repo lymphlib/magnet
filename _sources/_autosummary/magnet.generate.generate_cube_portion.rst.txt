@@ -1,0 +1,6 @@
+magnet.generate.generate\_cube\_portion
+=======================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: generate_cube_portion

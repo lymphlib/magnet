@@ -1,0 +1,6 @@
+magnet.generate.double\_circle
+==============================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: double_circle

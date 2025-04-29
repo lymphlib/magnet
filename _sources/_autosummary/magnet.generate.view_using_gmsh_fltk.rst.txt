@@ -1,0 +1,6 @@
+magnet.generate.view\_using\_gmsh\_fltk
+=======================================
+
+.. currentmodule:: magnet.generate
+
+.. autofunction:: view_using_gmsh_fltk

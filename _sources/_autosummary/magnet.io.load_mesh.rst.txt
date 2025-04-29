@@ -1,0 +1,6 @@
+magnet.io.load\_mesh
+====================
+
+.. currentmodule:: magnet.io
+
+.. autofunction:: load_mesh
