@@ -8,7 +8,7 @@ Magnet documentation
 ====================
 
 ``Magnet`` (**M**\ esh **A**\ lomeration by **G**\ raph neural **NET**\ work) is a python package for mesh agglomeration.
-The package includes state of the art methods, like Metis and k-means, as well as a convolutional neural network based approach.
+The package includes state of the art methods, like Metis and k-means, as well as pre-trained deep learning models and a complete toolchain to build, train and test graph neural networks.
 
 
 Contents

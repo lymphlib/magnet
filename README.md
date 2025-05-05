@@ -30,7 +30,9 @@ Examples on how to use Magnet are in the `examples` folder.
 
 
 ## Citation
-If you use Magnet please cite [our pre-print](TODO)
+If you use Magnet please cite [our pre-print](https://doi.org/10.48550/arXiv.2504.21780)
+
+Antonietti, P.F., Caldana, M., Mazzieri, I. and Fraschini, A.R., 2025. MAGNET: an open-source library for mesh agglomeration by Graph Neural Networks. arXiv preprint arXiv:2504.21780.
 
 ## Acknowledgments
 The authors acknowledge the support of the ERC Synergy Grant n. 101115663 [NEMESIS: NEw generation MEthods for numerical SImulationS](https://erc-nemesis.eu)
