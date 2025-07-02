@@ -35,6 +35,7 @@ and ovverriding the `loss_function` if necessary.
 from abc import ABC, abstractmethod
 import time
 import numpy as np
+import copy
 
 from scipy.sparse.csgraph import connected_components
 
@@ -98,11 +99,15 @@ class AgglomerationModel(ABC):
         mult_factor : float, optional.
             Multiplicative factor for mode 'mult_factor', ignored otherwise
             (default is 0.4).
+        hierarchy : bool, optional.
+            Return the whole hierarchy of nested grids in methods based on
+            the bisection algorithm
 
         Returns
         -------
         AggMesh
-            The agglomerated mesh.
+            The hierarcy of nested agglomerated meshes.
+            For some methods may be one mesh.
 
         Notes
         -----
@@ -117,24 +122,24 @@ class AgglomerationModel(ABC):
         """
         match mode:
             case "Nref":
-                cl = self.bisection_Nref(mesh, nref)
+                cl_hierarchy = self.bisection_Nref(mesh, nref)
             case "mult_factor":
-                cl = self.bisection_mult_factor(mesh, mult_factor)
+                cl_hierarchy = self.bisection_mult_factor(mesh, mult_factor)
             case "segregated":
-                cl = self.bisection_segregated(mesh, mult_factor)
+                cl_hierarchy = self.bisection_segregated(mesh, mult_factor)
             case "multilevel":
-                cl = self.multilevel_bisection(mesh, nref=nref, **kwargs)
+                cl_hierarchy = [self.multilevel_bisection(mesh, nref=nref, **kwargs)]
             case "direct_kway":
                 # if isinstance(self, GNN):
                 #     raise ValueError('GNN models have no direct k-way\
                 #                      agglomeration available.')
-                cl = self.direct_k_way(mesh, k=nref, **kwargs)
+                cl_hierarchy = [self.direct_k_way(mesh, k=nref, **kwargs)]
             case _:
                 raise ValueError("Agglomeration mode %s does not exist." % mode)
 
-        agg_mesh = mesh._agglomeration(classes=cl)  # may modify
-
-        return agg_mesh
+        return_hierarchy = ("hierarchy" in kwargs) and kwargs["hierarchy"]
+        agg_meshes = [mesh._agglomeration(classes=cl) for cl in cl_hierarchy]
+        return agg_meshes if return_hierarchy else agg_meshes[-1]
 
     def agglomerate_dataset(self, dataset: AggMeshDataset, **kwargs) -> AggMeshDataset:
         """Agglomerate all meshes in a dataset.
@@ -226,7 +231,8 @@ class AgglomerationModel(ABC):
         Returns
         -------
         Classlist
-            A list of arrays, each containing the indices of the elements
+            Hierarchy of agglomeration indexes. Each agg level is
+            a list of arrays, each containing the indices of the elements
             corresponding to one of the agglomerated elements.
         """
         if not isinstance(Nref, int) or Nref <= 0:
@@ -235,9 +241,11 @@ class AgglomerationModel(ABC):
         warm_start = (
             [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
         )
-        result = []
+        result = [[] for _ in range(Nref + 1)]
         for part in warm_start:
-            result.extend(self._bisection_Nref_recursive(mesh, graph, part, Nref))
+            hres = self._bisection_Nref_recursive(mesh, graph, part, Nref)
+            for lvl in range(Nref + 1):
+                result[lvl].extend(hres[lvl])
         return result
 
     def _bisection_Nref_recursive(
@@ -261,29 +269,30 @@ class AgglomerationModel(ABC):
         Returns
         -------
         ClassList
-            A list of arrays, each containing the indices of the elements
+            Hierarchy of agglomeration indexes. Each agg level is
+            a list of arrays, each containing the indices of the elements
             corresponding to one of the agglomerated elements.
         """
 
-        if NREF >= 1 and len(subset) > 1:
-            bipartition = self._bisect_subgraph(graph, subset, mesh.dim)
-            subgraph_0_classes = self._bisection_Nref_recursive(
-                mesh, graph, bipartition[0], NREF - 1
-            )
-            subgraph_1_classes = self._bisection_Nref_recursive(
-                mesh, graph, bipartition[1], NREF - 1
-            )
-            # # reduce the indices of the subgraphs to those of the original one:
-            # subgraph_0_classes = [bipartition[0][subgraph_0_classes[j]]
-            #                       for j in range(len(subgraph_0_classes))]
-            # subgraph_1_classes = [bipartition[1][subgraph_1_classes[j]]
-            #                       for j in range(len(subgraph_1_classes))]
-            return subgraph_0_classes + subgraph_1_classes
-        else:
-            # no need to bisect anymore: check for connectedness
-            return self._extract_connected_comps(mesh, subset)
+        # Stack to simulate recursion: each item is (subset, remaining NREF)
+        stack = [(subset, NREF)]
+        results = [[] for _ in range(NREF + 1)]
 
-    # def bisection_tsize(self, mesh: Mesh, target_size: float) -> ClassList:
+        while stack:
+            current_subset, current_nref = stack.pop()
+            if current_nref >= 1 and len(current_subset) > 1:
+                bipartition = self._bisect_subgraph(graph, current_subset, mesh.dim)
+                for q in range(2):
+                    stack.append((bipartition[q], current_nref - 1))
+                    results[current_nref].extend(
+                        self._extract_connected_comps(mesh, bipartition[q])
+                    )
+            else:
+                # Base case: extract connected components
+                components = self._extract_connected_comps(mesh, current_subset)
+                results[current_nref].extend(components)
+
+        return results[::-1]
 
     def bisection_mult_factor(
         self, mesh: Mesh, mult_factor: float, warm_start: ClassList = None
@@ -305,7 +314,8 @@ class AgglomerationModel(ABC):
         Returns
         -------
         Classlist
-            A list of arrays, each containing the indices of the elements
+            Hierarchy of agglomeration indexes. Each agg level is
+            a list of arrays, each containing the indices of the elements
             corresponding to one of the agglomerated elements.
 
         Notes
@@ -323,14 +333,14 @@ class AgglomerationModel(ABC):
             [np.arange(0, mesh.num_cells)] if warm_start is None else warm_start
         )
         output = []
-
+        bisection_classes_hierarcy = [copy.deepcopy(bisection_classes)]
         while bisection_classes:
-            new_set = []
+            to_refine = []
             for partition in bisection_classes:
                 if len(partition) > 1:
                     h = maximum_sq_distance(mesh.Coords[partition])
                     if h > target_h_sq:
-                        new_set.extend(
+                        to_refine.extend(
                             self._bisect_subgraph(graph, partition, mesh.dim)
                         )
                     else:
@@ -338,9 +348,12 @@ class AgglomerationModel(ABC):
                         output.extend(self._extract_connected_comps(mesh, partition))
                 else:
                     output.append(partition)
-            bisection_classes = new_set
+            bisection_classes = to_refine
+            bisection_classes_hierarcy.append(
+                copy.deepcopy(to_refine) + copy.deepcopy(output)
+            )
 
-        return output
+        return bisection_classes_hierarcy
 
     def bisection_segregated(
         self, mesh: Mesh, mult_factor: float, subset: np.ndarray = None

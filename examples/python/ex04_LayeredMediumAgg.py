@@ -43,7 +43,10 @@ def main(modelsdir, datadir):
 
     sage = magnet.aggmodels.SageBase2D(64, 32, 3, 2).to(magnet.DEVICE)
     sage.load_model(modelsdir + "/SAGEbase2D.pt")
-    aggEmilia = sage.agglomerate(Emilia, "segregated", mult_factor=0.04)
+    aggEmilia_h = sage.agglomerate(
+        Emilia, "segregated", mult_factor=0.04, hierarchy=True
+    )
+
     palette = [
         (255, 193, 7),  # Amber
         (76, 175, 80),  # Green
@@ -54,14 +57,16 @@ def main(modelsdir, datadir):
         (233, 30, 99),  # Pink
     ]
     palette = [(r / 255, g / 255, b / 255) for r, g, b in palette]
-    aggEmilia.view(
-        view_phys=True,
-        line_width=0.25,
-        palette=palette,
-        edge_color="black",
-        figsize=(10, 10),
-        title="Agglomerated mesh",
-    )
+    for lvl, aggEmilia in enumerate(aggEmilia_h):
+        aggEmilia.view(
+            view_phys=True,
+            line_width=0.25,
+            palette=palette,
+            edge_color="black",
+            figsize=(10, 10),
+            title="Agglomerated mesh",
+        )
+        magnet.io.save_mesh(aggEmilia, f"aggEmilia_lvl{lvl}.vtu")
 
 
 if __name__ == "__main__":
