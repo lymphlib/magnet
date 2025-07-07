@@ -591,10 +591,13 @@ of the mesh independently.</p></li>
 is 7).</p></li>
 <li><p><strong>mult_factor</strong> (<em>float</em><em>, </em><em>optional.</em>) – Multiplicative factor for mode ‘mult_factor’, ignored otherwise
 (default is 0.4).</p></li>
+<li><p><strong>hierarchy</strong> (<em>bool</em><em>, </em><em>optional.</em>) – Return the whole hierarchy of nested grids in methods based on
+the bisection algorithm</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The agglomerated mesh.</p>
+<dd class="field-even"><p>The hierarcy of nested agglomerated meshes.
+For some methods may be one mesh.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="magnet.mesh.AggMesh.html#magnet.mesh.AggMesh" title="magnet.mesh.AggMesh">AggMesh</a></p>
@@ -663,7 +666,8 @@ elements.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of arrays, each containing the indices of the elements
+<dd class="field-even"><p>Hierarchy of agglomeration indexes. Each agg level is
+a list of arrays, each containing the indices of the elements
 corresponding to one of the agglomerated elements.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -688,7 +692,8 @@ that of the entire mesh. Must be between 0 and 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of arrays, each containing the indices of the elements
+<dd class="field-even"><p>Hierarchy of agglomeration indexes. Each agg level is
+a list of arrays, each containing the indices of the elements
 corresponding to one of the agglomerated elements.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
