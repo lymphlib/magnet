@@ -16,6 +16,7 @@ from magnet.mesh import Mesh
 from magnet.aggmodels.gnn import GeometricGNN
 from magnet.graph_utils import align_to_x_axis
 from magnet._absaggmodels import DEVICE
+from magnet.graph_utils import randomrotate
 
 
 class GNNHeterogeneous(GeometricGNN):
@@ -82,7 +83,7 @@ class GNNHeterogeneous(GeometricGNN):
         )
 
         if randomRotate:
-            coords_sample = self._randomrotate(coords_sample)
+            coords_sample = randomrotate(coords_sample)
         x = torch.cat([coords_sample, volumes_sample, physical_groups_sample], -1)
 
         edge_index = from_scipy_sparse_matrix(mesh.Adjacency)[0].to(device)

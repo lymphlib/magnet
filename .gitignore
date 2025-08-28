@@ -22,3 +22,7 @@ docs/*.yml
 
 # package
 *.egg-info
+
+# other
+*.csv
+*.tmp

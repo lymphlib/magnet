@@ -859,7 +859,7 @@ def dataset_2D_hetero(
     output_path: str,
     dataset_name: str,
     bounds: tuple[int, int],
-    additional_kwargs: dict[str, dict] = None,
+    additional_kwargs: dict[str, dict] = dict(),
     extension: str = "vtk",
     base_name: str = "mesh",
     seed: int = None,

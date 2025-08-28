@@ -130,9 +130,6 @@ class AgglomerationModel(ABC):
             case "multilevel":
                 cl_hierarchy = [self.multilevel_bisection(mesh, nref=nref, **kwargs)]
             case "direct_kway":
-                # if isinstance(self, GNN):
-                #     raise ValueError('GNN models have no direct k-way\
-                #                      agglomeration available.')
                 cl_hierarchy = [self.direct_k_way(mesh, k=nref, **kwargs)]
             case _:
                 raise ValueError("Agglomeration mode %s does not exist." % mode)
